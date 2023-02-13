@@ -1,0 +1,8 @@
+../Drivers/EEMProtocol/src/EEMProtocol.c:39:11:EEM_INIT	72	static
+../Drivers/EEMProtocol/src/EEMProtocol.c:210:8:EEM_PUSH	24	static
+../Drivers/EEMProtocol/src/EEMProtocol.c:239:6:EEM_POP	24	static
+../Drivers/EEMProtocol/src/EEMProtocol.c:264:13:EEM_TX	24	static
+../Drivers/EEMProtocol/src/EEMProtocol.c:325:13:EEM_RX	24	static
+../Drivers/EEMProtocol/src/EEMProtocol.c:383:12:EEM_PERIODIC	24	static
+../Drivers/EEMProtocol/src/EEMProtocol.c:728:12:EEM_IS_EMPTY	16	static
+../Drivers/EEMProtocol/src/EEMProtocol.c:740:12:EEM_IS_FULL	16	static

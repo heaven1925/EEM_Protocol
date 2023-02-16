@@ -1,12 +1,6 @@
 #ifndef __CAN_SPI_H
 #define	__CAN_SPI_H
 
-#define	BSP_USE_CANSPI
-#undef	BSP_USE_CANSPI
-
-
-#if defined(BSP_USE_CANSPI)
-
 #include "stm32f4xx_hal.h"
 typedef union {
   struct {
@@ -36,7 +30,5 @@ uint8_t CANSPI_messagesInBuffer(void);
 uint8_t CANSPI_isBussOff(void);
 uint8_t CANSPI_isRxErrorPassive(void);
 uint8_t CANSPI_isTxErrorPassive(void);
-
-#endif
 
 #endif	/* __CAN_SPI_H */

@@ -2,8 +2,8 @@
 #include "main.h"
 /* Pin 설정에 맞게 수정필요. Modify below items for your SPI configurations */
 
-extern SPI_HandleTypeDef        hspi3;
-#define SPI_CAN                 &hspi3
+extern SPI_HandleTypeDef        hspi1;
+#define SPI_CAN                 &hspi1
 #define SPI_TIMEOUT             10
 #define MCP2515_CS_HIGH()   	HAL_GPIO_WritePin(SPI_CS_GPIO_Port, SPI_CS_Pin, GPIO_PIN_SET)
 #define MCP2515_CS_LOW()    	HAL_GPIO_WritePin(SPI_CS_GPIO_Port, SPI_CS_Pin, GPIO_PIN_RESET)

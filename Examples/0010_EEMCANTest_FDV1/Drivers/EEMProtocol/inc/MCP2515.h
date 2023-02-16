@@ -1,11 +1,6 @@
 #ifndef __MCP2515_H
 #define	__MCP2515_H
 
-#define	BSP_USE_MCP2515
-#undef	BSP_USE_MCP2515
-
-#if defined(BSP_USE_MCP2515)
-
 #pragma anon_unions
 #include "stm32f4xx_hal.h"
 #include "stdbool.h"
@@ -230,7 +225,5 @@ void MCP2515_RequestToSend(uint8_t instruction);
 uint8_t MCP2515_ReadStatus(void);
 uint8_t MCP2515_GetRxStatus(void);
 void MCP2515_BitModify(uint8_t address, uint8_t mask, uint8_t data);
-
-#endif
 
 #endif

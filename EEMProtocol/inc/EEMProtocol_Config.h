@@ -225,16 +225,14 @@ typedef struct
 			EEM_U8 HVAC_led09_u1           : 1 ; /* YAKS Donanımına bağlı araç içerisindeki led-09 durumu */
 			EEM_U8 HVAC_led10_u1 	       : 1 ; /* YAKS Donanımına bağlı araç içerisindeki led-10 durumu */
 			EEM_U8 HVAC_led11_u1 	       : 1 ; /* YAKS Donanımına bağlı araç içerisindeki led-11 durumu */
-			EEM_U8 HVAC_led12_u1 	       : 1 ; /* YAKS Donanımına bağlı araç içerisindeki led-12 durumu */
-			EEM_U8 HVAC_pressureVal_u8 	   : 8 ; /* Koltuk Basınç sensörü analog 8bit değeri */
-			EEM_U8 HVAC_indoorTempVal_u8   : 8 ; /* Araç Kontrol Görev Birimi ( AKS-YAKS-RPI) Sıcaklık analog 8bit değeri */
-			EEM_U8 HVAC_indoorHumidVal_u8  : 8 ; /* Araç Kontrol Görev Birimi ( AKS-YAKS-RPI) Nem analog 8bit değeri */
+			EEM_U8 HVAC_fireVal_u4 	   	   : 4 ; /* Ateş Sensörünün analog  4bit degeri					  */
+			EEM_U8 HVAC_seatPressure_u8    : 8 ; /* Koltuk Basınç sensörü analog 8bit değeri */
 			EEM_U8 HVAC_rtcCalib_u1		   : 1 ; /* YAKS tarafından RTC kalibrasyon yapılacağı bilgisi */
-			EEM_U8 HVAC_rtcNewSecond_u8	   : 1 ;	/* YAKS RTC Saniye bilgisi  */
-			EEM_U8 HVAC_rtcNewMinutes_u8   : 1 ; /* YAKS RTC Dakika bilgisi	*/
-			EEM_U8 HVAC_rtcNewHour_u8	   : 1 ; /* YAKS RTC Saat bilgisi 	*/
-			EEM_U8 HVAC_rtcNewDay_u8	   : 1 ; /* YAKS RTC Saat bilgisi 	*/
-			EEM_U8 HVAC_rtcNewMonth_u8	   : 1 ; /* YAKS RTC Ay bilgisi		*/
+			EEM_U8 HVAC_rtcNewSecond_u8	   : 8 ;	/* YAKS RTC Saniye bilgisi  */
+			EEM_U8 HVAC_rtcNewMinutes_u8   : 8 ; /* YAKS RTC Dakika bilgisi	*/
+			EEM_U8 HVAC_rtcNewHour_u8	   : 8 ; /* YAKS RTC Saat bilgisi 	*/
+			EEM_U8 HVAC_rtcNewDay_u8	   : 8 ; /* YAKS RTC Saat bilgisi 	*/
+			EEM_U8 HVAC_rtcNewMonth_u8	   : 8 ; /* YAKS RTC Ay bilgisi		*/
 			EEM_U32:22; /* RFU */
 		}SPN;
 	}Message01;
@@ -243,151 +241,171 @@ typedef struct
 	union{
 		EEM_U8 payload[8];
 		struct{
-			EEM_U8 HVAC_fireVal            : 4 ; /*  */
-			EEM_U8 HVAC_smokeVal           : 4 ; /*  */
-			EEM_U8 HVAC_windPressure1      : 8 ; /*  */
-			EEM_U8 HVAC_windPressure2      : 8 ; /*  */
-			EEM_U8 HVAC_leftFrontWheel_xy  : 8 ; /*  */
-			EEM_U8 HVAC_rightFrontWheel_xy : 8 ; /*  */
-			EEM_U8 HVAC_status00_u1        : 1 ; /*  */
-			EEM_U8 HVAC_status01_u1        : 1 ; /*  */
-			EEM_U8 HVAC_status02_u1        : 1 ; /*  */
-			EEM_U8 HVAC_status03_u1        : 1 ; /*  */
-			EEM_U8 HVAC_status04_u1        : 1 ; /*  */
-			EEM_U8 HVAC_status05_u1        : 1 ; /*  */
-			EEM_U8 HVAC_status06_u1        : 1 ; /*  */
-			EEM_U8 HVAC_status07_u1        : 1 ; /*  */
-			EEM_U8 HVAC_Hgear_cmd	       : 3 ; /*  */
-			EEM_U8 HVAC_Gear_cmd	       : 2 ; /*  */
-			EEM_U8 HVAC_cmdbit05_u1	       : 1 ; /*  */
-			EEM_U8 HVAC_cmdbit06_u1	       : 1 ; /*  */
-			EEM_U8 HVAC_cmdbit07_u1	       : 1 ; /*  */
-			EEM_U8:8; /* RFU */
+			EEM_U8 HVAC_tempVal_u8            : 8 ; /* Araç Kontrol Görev Birimi ( AKS-YAKS-RPI) Sıcaklık analog 8bit değeri	*/
+			EEM_U8 HVAC_humidityVal_u8		  : 8 ; /* Araç Kontrol Görev Birimi ( AKS-YAKS-RPI) Nem analog 8bit değeri					*/
+			EEM_U8 HVAC_smokeVal_u4			  : 4 ; /* Duman Sensörünün analog  4bit degeri					*/
+			EEM_U8 HVAC_windPressure1_u4      : 4 ; /* Sol havalandırma rüzgar basınc sensörünün analog  4bit değeri					*/	
+			EEM_U8 HVAC_windPressure2_u4      : 4 ; /* Sağ havalandırma rüzgar basınc sensörünün analog 4bit değeri					*/			
+			EEM_U8 HVAC_leftFrontWheel_xy_u8  : 8 ; /* Sol ön tekerleğin X-Y eksen pozisyonları yazılımsal diferansiyel geri beslemesi için					*/
+			EEM_U8 HVAC_rightFrontWheel_xy_u8 : 8 ; /* Sağ ön tekerleğin X-Y eksen pozisyonları yazılımsal diferansiyel geri beslemesi için					*/
+			EEM_U8 HVAC_status00_u1        	  : 1 ; /* YAKS'de denetlenen status biti 0 -> YAKS 'deki Sol ön teker açı sınırı durumunu tutar.					*/
+			EEM_U8 HVAC_status01_u1           : 1 ; /* YAKS'de denetlenen status biti 1 -> YAKS 'deki Sağ ön teker açı sınırı durumunu tutar.					*/
+			EEM_U8 HVAC_status02_u1           : 1 ; /* YAKS'de denetlenen status biti 2 -> YAKS 'deki .......... durumunu tutar.					*/
+			EEM_U8 HVAC_status03_u1           : 1 ; /* YAKS'de denetlenen status biti 3 -> YAKS 'deki .......... durumunu tutar.					*/
+			EEM_U8 HVAC_status04_u1           : 1 ; /* YAKS'de denetlenen status biti 4 -> YAKS 'deki .......... durumunu tutar.					*/
+			EEM_U8 HVAC_status05_u1           : 1 ; /* YAKS'de denetlenen status biti 5 -> YAKS 'deki .......... durumunu tutar.					*/
+			EEM_U8 HVAC_status06_u1           : 1 ; /* YAKS'de denetlenen status biti 6 -> YAKS 'deki .......... durumunu tutar.					*/
+			EEM_U8 HVAC_status07_u1           : 1 ; /* YAKS'de denetlenen status biti 7 -> YAKS 'deki .......... durumunu tutar.					*/
+			EEM_U8 HVAC_Hgear_cmd_u3	      : 3 ; /* H - Vites Durum bilgisi - 0,1,2,3,4,5,6 */
+			EEM_U8 HVAC_Gear_cmd_u2	          : 2 ; /* Park - İleri- Geri Vites Durum Bilgisi							*/
+			EEM_U8 HVAC_cmdbit05_u1	          : 1 ; /* YAKS'den AKS'ye gönderilen 5. komut -> ......... komutu	  	    */
+			EEM_U8 HVAC_cmdbit06_u1	          : 1 ; /* YAKS'den AKS'ye gönderilen 6. komut -> ......... komutu	    	*/
+			EEM_U8 HVAC_cmdbit07_u1	          : 1 ; /* YAKS'den AKS'ye gönderilen 7. komut -> ......... komutu					*/
+			EEM_U8:4; /* RFU */
 		}SPN;
 	}Message02;
-
-	EEM_U32 Message07_ID;
-	/* MS1 -> BCM :: PGN = (1809)d */
+	
+}HVAC_Module_st;	
+	
+typedef struct
+{
+	EEM_U32 Message04_ID;
 	union{
 		EEM_U8 payload[8];
 		struct{
-			EEM_U16 MS1_rpm           : 8  ; /*  */
-			EEM_U32 MS1_voltage       : 32 ; /*  */
-			EEM_U16 MS1_current       : 16 ; /*  */
-			EEM_U16 MS1_temp          : 8  ; /*  */
-		}SPN;
-	}Message07; /* 0x07 */
+			EEM_U8 BCM_recordCamera_u1   	: 1  ; /*  Kamera kaydını başlatacak biti tutar.			*/
+			EEM_U8 BCM_stopCamera_u1	 	: 1	 ; /*  Kamera kaydını durduracak biti tutar.			*/
+			EEM_U8 BCM_deleteRecord_u1   	: 1	 ; /*  Kamera kaydını iptal edecek biti tutar.			*/
+			EEM_U8 BCM_sdCardErase_u1	 	: 1	 ; /*  Kamera kaydını sd karttan silecek biti tutar.	*/
+			EEM_U8 BCM_sdCardSave_u1     	: 1	 ; /*  Kamera kaydını sd karta kaydedecek biti tutar.	*/
+			EEM_U8 BCM_dashboardState_u1 	: 1	 ; /*  Dashboard aktif pasif-durumunu tutar. */
+			EEM_U8 BCM_dashboardCmd01_u1 	: 1	 ; /*  BCM'den SCB'ye gönderilen 1. komut -> ......... komutu					*/
+			EEM_U8 BCM_dashboardCmd02_u1 	: 1	 ; /*  BCM'den SCB'ye gönderilen 2. komut -> ......... komutu					*/
+			EEM_U8 BCM_dashboardCmd03_u1 	: 1	 ; /*  BCM'den SCB'ye gönderilen 3. komut -> ......... komutu					*/
+			EEM_U8 BCM_dashboardCmd04_u1 	: 1	 ; /*  BCM'den SCB'ye gönderilen 4. komut -> ......... komutu					*/
+			EEM_U8 :1 ;          
+			EEM_U8 BCM_ignitionState_u1	 	: 1	 ; /*  Kontağın açık/kapalı bilgisini tutar.			*/
+			EEM_U8 :1 ;           
+			EEM_U8 BCM_leftSignal_u1	 	: 1	 ; /*  Sol sinyalin açık/kapalı bilgisini tutar.					*/
+			EEM_U8 BCM_rightSignal_u1	 	: 1	 ; /*  Sağ sinyalin açık/kapalı bilgisini tutar.					*/
+			EEM_U8 BCM_frontLight_u1	 	: 1	 ; /*  Ön farların açık/kapalı bilgisini tutar.					*/
+			EEM_U8 BCM_backLight_u1	 		: 1	 ; /*  Arka farların açık/kapalı bilgisini tutar.					*/
+			EEM_U8 BCM_backSignal_u1	 	: 1	 ; /*  Dörtlü sinyallerin açık/kapalı bilgisini tutar.					*/
+			EEM_U8 :1 ;            
+			EEM_U8 BCM_steeringAngle_u8 	: 8	 ; /*  Direksiyonun açı bilgisini tutar.					*/
+			EEM_U8 BCM_gasPedal_u8		 	: 8  ; /*  Gaz pedalından okunan değeri tutar.					 */
+			EEM_U8 BCM_brakePedal_u8	 	: 8  ; /*  Fren pedalından okunan değeri tutar.					*/
+			EEM_U16 BCM_diffSpeed_u16	 	: 16 ; /*  Aracın diferansiyel uygulanmış hız bilgisini tutar.					*/
+			EEM_U8 BCM_charge_u8		 	: 8  ; /*  Kalan batarya bilgisini tutar.					*/
+			EEM_U8 :1 ;          
+			EEM_U8 BCM_leftDirection_u1 	: 1  ; /*  Aracın sağa/sola gittiği bilgisini tutar.					*/
+			EEM_U8 BCM_rightDirection_u1 	: 1  ; /*  Aracın ileri/geri gittiği bilgisini tutar.					*/
 
+		}SPN;
+	}Message04;
+	
+	EEM_U32 Message05_ID;
+	union{
+		EEM_U8 payload[8];
+		struct{
+			EEM_U16 BCM_leftGyro_u16  	: 16  ; /*  */
+			EEM_U16 BCM_leftAcc_u16  	: 16  ; /*  */
+			EEM_U16 BCM_rightGyro_u16   : 16  ; /*  */
+			EEM_U16 BCM_rightAcc_u16  	: 16  ; /*  */
+		}SPN;
+	}Message05;
+	
+	
 	EEM_U32 Message08_ID;
 	union{
 		EEM_U8 payload[8];
 		struct{
-			EEM_U32 MS1_Speed     	: 32  ; /*  */
-			EEM_U32 MS1_Direction   : 32  ; /*  */
+			EEM_U32 BCM_MS1_Speed_u32     	: 32  ; /*  */
+			EEM_U32 BCM_MS1_Direction_u32   : 32  ; /*  */
 		}SPN;
 	}Message08;
-
-	EEM_U32 Message09_ID;
-	union{
-		EEM_U8 payload[8];
-		struct{
-			EEM_U16 MS2_rpm           : 8  ; /*  */
-			EEM_U32 MS2_voltage       : 32 ; /*  */
-			EEM_U16 MS2_current       : 16 ; /*  */
-			EEM_U16 MS2_temp          : 8  ; /*  */
-		}SPN;
-	}Message09;
-
-	EEM_U32 Message10_ID;
-	union{
-		EEM_U8 payload[8];
-		struct{
-			EEM_U32 MS2_Speed     	 : 32  ; /*  */
-			EEM_U32 MS2_Direction   : 32  ; /*  */
-		}SPN;
-	}Message10;
-
+	
 	EEM_U32 Message18_ID;
 	union{
 		EEM_U8 payload[8];
 		struct{
-			EEM_U8 MS1_warningFlag01    : 1  ; /*  */
-			EEM_U8 MS1_warningFlag02	: 1  ;
-			EEM_U8 MS1_warningFlag03	: 1  ;
-			EEM_U8 MS1_warningFlag04	: 1  ;
-			EEM_U8 MS1_warningFlag05	: 1  ;
-			EEM_U8 MS1_warningFlag06	: 1  ;
-			EEM_U8 MS1_warningFlag07	: 1  ;
-			EEM_U8 MS1_warningFlag08	: 1  ;
-			EEM_U8 MS1_errorFlag01		: 1  ;
-			EEM_U8 MS1_errorFlag02		: 1  ;
-			EEM_U8 MS1_errorFlag03		: 1  ;
-			EEM_U8 MS1_errorFlag04		: 1  ;
-			EEM_U8 MS1_errorFlag05		: 1  ;
-			EEM_U8 MS1_errorFlag06		: 1  ;
-			EEM_U8 MS1_errorFlag07		: 1  ;
-			EEM_U8 MS1_errorFlag08		: 1  ;
-			EEM_U8 MS1_statusBit01		: 1  ;
-			EEM_U8 MS1_statusBit02		: 1  ;
-			EEM_U8 MS1_statusBit03		: 1  ;
-			EEM_U8 MS1_statusBit04		: 1  ;
-			EEM_U8 MS1_statusBit05		: 1  ;
-			EEM_U8 MS1_statusBit06		: 1  ;
-			EEM_U8 MS1_statusBit07		: 1  ;
-			EEM_U8 MS1_statusBit08		: 1  ;
-			EEM_U8 MS1_dummyByte01		: 8	 ;
-			EEM_U8 MS1_dummyByte02		: 8	 ;
-			EEM_U8 MS1_dummyByte03		: 8	 ;
-			EEM_U8 MS1_dummyByte04		: 8	 ;
-			EEM_U8 MS1_dummyByte05		: 8	 ;
+			EEM_U8 BCM_MS1_warningFlag01    : 1  ; /*  */
+			EEM_U8 BCM_MS1_warningFlag02	: 1  ;
+			EEM_U8 BCM_MS1_warningFlag03	: 1  ;
+			EEM_U8 BCM_MS1_warningFlag04	: 1  ;
+			EEM_U8 BCM_MS1_warningFlag05	: 1  ;
+			EEM_U8 BCM_MS1_warningFlag06	: 1  ;
+			EEM_U8 BCM_MS1_warningFlag07	: 1  ;
+			EEM_U8 BCM_MS1_warningFlag08	: 1  ;
+			EEM_U8 BCM_MS1_errorFlag01		: 1  ;
+			EEM_U8 BCM_MS1_errorFlag02		: 1  ;
+			EEM_U8 BCM_MS1_errorFlag03		: 1  ;
+			EEM_U8 BCM_MS1_errorFlag04		: 1  ;
+			EEM_U8 BCM_MS1_errorFlag05		: 1  ;
+			EEM_U8 BCM_MS1_errorFlag06		: 1  ;
+			EEM_U8 BCM_MS1_errorFlag07		: 1  ;
+			EEM_U8 BCM_MS1_errorFlag08		: 1  ;
+			EEM_U8 BCM_MS1_statusBit01		: 1  ;
+			EEM_U8 BCM_MS1_statusBit02		: 1  ;
+			EEM_U8 BCM_MS1_statusBit03		: 1  ;
+			EEM_U8 BCM_MS1_statusBit04		: 1  ;
+			EEM_U8 BCM_MS1_statusBit05		: 1  ;
+			EEM_U8 BCM_MS1_statusBit06		: 1  ;
+			EEM_U8 BCM_MS1_statusBit07		: 1  ;
+			EEM_U8 BCM_MS1_statusBit08		: 1  ;
+			EEM_U8 BCM_MS1_dummyByte01		: 8	 ;
+			EEM_U8 BCM_MS1_dummyByte02		: 8	 ;
+			EEM_U8 BCM_MS1_dummyByte03		: 8	 ;
+			EEM_U8 BCM_MS1_dummyByte04		: 8	 ;
+			EEM_U8 BCM_MS1_dummyByte05		: 8	 ;
 		}SPN;
 	}Message18;
+	
+	EEM_U32 Message10_ID;
+	union{
+		EEM_U8 payload[8];
+		struct{
+			EEM_U32 BCM_MS2_Speed     	 : 32  ; /*  */
+			EEM_U32 BCM_MS2_Direction   : 32  ; /*  */
+		}SPN;
+	}Message10;
 
 	EEM_U32 Message19_ID;
 	union{
 		EEM_U8 payload[8];
 		struct{
-			EEM_U8 MS2_warningFlag01    : 1  ; /*  */
-			EEM_U8 MS2_warningFlag02	: 1  ;
-			EEM_U8 MS2_warningFlag03	: 1  ;
-			EEM_U8 MS2_warningFlag04	: 1  ;
-			EEM_U8 MS2_warningFlag05	: 1  ;
-			EEM_U8 MS2_warningFlag06	: 1  ;
-			EEM_U8 MS2_warningFlag07	: 1  ;
-			EEM_U8 MS2_warningFlag08	: 1  ;
-			EEM_U8 MS2_errorFlag01		: 1  ;
-			EEM_U8 MS2_errorFlag02		: 1  ;
-			EEM_U8 MS2_errorFlag03		: 1  ;
-			EEM_U8 MS2_errorFlag04		: 1  ;
-			EEM_U8 MS2_errorFlag05		: 1  ;
-			EEM_U8 MS2_errorFlag06		: 1  ;
-			EEM_U8 MS2_errorFlag07		: 1  ;
-			EEM_U8 MS2_errorFlag08		: 1  ;
-			EEM_U8 MS2_statusBit01		: 1  ;
-			EEM_U8 MS2_statusBit02		: 1  ;
-			EEM_U8 MS2_statusBit03		: 1  ;
-			EEM_U8 MS2_statusBit04		: 1  ;
-			EEM_U8 MS2_statusBit05		: 1  ;
-			EEM_U8 MS2_statusBit06		: 1  ;
-			EEM_U8 MS2_statusBit07		: 1  ;
-			EEM_U8 MS2_statusBit08		: 1  ;
-			EEM_U8 MS2_dummyByte01		: 8	 ;
-			EEM_U8 MS2_dummyByte02		: 8	 ;
-			EEM_U8 MS2_dummyByte03		: 8	 ;
-			EEM_U8 MS2_dummyByte04		: 8	 ;
-			EEM_U8 MS2_dummyByte05		: 8	 ;
+			EEM_U8 BCM_MS2_warningFlag01    : 1  ; /*  */
+			EEM_U8 BCM_MS2_warningFlag02	: 1  ;
+			EEM_U8 BCM_MS2_warningFlag03	: 1  ;
+			EEM_U8 BCM_MS2_warningFlag04	: 1  ;
+			EEM_U8 BCM_MS2_warningFlag05	: 1  ;
+			EEM_U8 BCM_MS2_warningFlag06	: 1  ;
+			EEM_U8 BCM_MS2_warningFlag07	: 1  ;
+			EEM_U8 BCM_MS2_warningFlag08	: 1  ;
+			EEM_U8 BCM_MS2_errorFlag01		: 1  ;
+			EEM_U8 BCM_MS2_errorFlag02		: 1  ;
+			EEM_U8 BCM_MS2_errorFlag03		: 1  ;
+			EEM_U8 BCM_MS2_errorFlag04		: 1  ;
+			EEM_U8 BCM_MS2_errorFlag05		: 1  ;
+			EEM_U8 BCM_MS2_errorFlag06		: 1  ;
+			EEM_U8 BCM_MS2_errorFlag07		: 1  ;
+			EEM_U8 BCM_MS2_errorFlag08		: 1  ;
+			EEM_U8 BCM_MS2_statusBit01		: 1  ;
+			EEM_U8 BCM_MS2_statusBit02		: 1  ;
+			EEM_U8 BCM_MS2_statusBit03		: 1  ;
+			EEM_U8 BCM_MS2_statusBit04		: 1  ;
+			EEM_U8 BCM_MS2_statusBit05		: 1  ;
+			EEM_U8 BCM_MS2_statusBit06		: 1  ;
+			EEM_U8 BCM_MS2_statusBit07		: 1  ;
+			EEM_U8 BCM_MS2_statusBit08		: 1  ;
+			EEM_U8 BCM_MS2_dummyByte01		: 8	 ;
+			EEM_U8 BCM_MS2_dummyByte02		: 8	 ;
+			EEM_U8 BCM_MS2_dummyByte03		: 8	 ;
+			EEM_U8 BCM_MS2_dummyByte04		: 8	 ;
+			EEM_U8 BCM_MS2_dummyByte05		: 8	 ;
 			}SPN;
 	    }Message19;
 
-	EEM_U32 Message16_ID;
-	union{
-		EEM_U8 payload[8];
-		struct{
-			EEM_U16 temp          : 12 ; /*  */
-			EEM_U16 current       : 12 ; /*  */
-			//EEM_U64:40; /* RFU */
-		}SPN;
-	}Message16;
 
 }BCM_Module_st;
 
@@ -408,9 +426,19 @@ typedef struct
 
 typedef struct
 {
+	EEM_U32 Message07_ID;
+	union{
+		EEM_U8 payload[8];
+		struct{
+			EEM_U16 MS1_rpm           : 8  ; /*  */
+			EEM_U32 MS1_voltage       : 32 ; /*  */
+			EEM_U16 MS1_current       : 16 ; /*  */
+			EEM_U16 MS1_temp          : 8  ; /*  */
+		}SPN;
+	}Message07; /* 0x07 */
+	
 	EEM_U32 Message20_ID;
-	union
-	{
+	union{
 		EEM_U8 payload[8];
 		struct
 		{
@@ -429,8 +457,7 @@ typedef struct
 	}Message20;
 
 	EEM_U32 Message21_ID;
-	union
-	{
+	union{
 		EEM_U8 payload[8];
 		struct
 		{
@@ -446,9 +473,19 @@ typedef struct
 
 typedef struct
 {
+	EEM_U32 Message09_ID;
+	union{
+		EEM_U8 payload[8];
+		struct{
+			EEM_U16 MS2_rpm           : 8  ; /*  */
+			EEM_U32 MS2_voltage       : 32 ; /*  */
+			EEM_U16 MS2_current       : 16 ; /*  */
+			EEM_U16 MS2_temp          : 8  ; /*  */
+		}SPN;
+	}Message09;
+	
 	EEM_U32 Message22_ID;
-	union
-	{
+	union{
 		EEM_U8 payload[8];
 		struct
 		{
@@ -467,8 +504,7 @@ typedef struct
 	}Message22;
 
 	EEM_U32 Message23_ID;
-	union
-	{
+	union{
 		EEM_U8 payload[8];
 		struct
 		{

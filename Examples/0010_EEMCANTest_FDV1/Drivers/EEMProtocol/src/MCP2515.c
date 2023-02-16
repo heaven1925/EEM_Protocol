@@ -2,10 +2,8 @@
 #include "main.h"
 /* Pin 설정에 맞게 수정필요. Modify below items for your SPI configurations */
 
-#if defined(BSP_USE_MCP2515)
-
-extern SPI_HandleTypeDef        hspi3;
-#define SPI_CAN                 &hspi3
+extern SPI_HandleTypeDef        hspi1;
+#define SPI_CAN                 &hspi1
 #define SPI_TIMEOUT             10
 #define MCP2515_CS_HIGH()   	HAL_GPIO_WritePin(SPI_CS_GPIO_Port, SPI_CS_Pin, GPIO_PIN_SET)
 #define MCP2515_CS_LOW()    	HAL_GPIO_WritePin(SPI_CS_GPIO_Port, SPI_CS_Pin, GPIO_PIN_RESET)
@@ -254,5 +252,3 @@ static void SPI_RxBuffer(uint8_t *buffer, uint8_t length)
 {
   HAL_SPI_Receive(SPI_CAN, buffer, length, SPI_TIMEOUT);
 }
-#endif
-

@@ -52,7 +52,6 @@ EEM_ERR_T EEM_INIT( EEM_Protocol_obj_st*  param )
 	
 	
 	
-	
 #elif (defined(STM32H750xx) && defined(FDCAN_Protocol))
 	/*@NOTICE: All Configs for 42MHz CAN BASE CLOCK */
 

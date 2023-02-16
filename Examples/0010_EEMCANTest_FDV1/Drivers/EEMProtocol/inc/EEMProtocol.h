@@ -16,7 +16,7 @@
 */
 #ifndef SPI2CAN_Protocol
 #define SPI2CAN_Protocol
-#undef SPI2CAN_Protocol
+//#undef SPI2CAN_Protocol
 #endif
 
 /*
@@ -32,7 +32,7 @@
 */
 #ifndef FDCAN_Protocol
 #define FDCAN_Protocol
-//#undef  FDCAN_Protocol
+#undef  FDCAN_Protocol
 #endif
 
 
@@ -215,7 +215,7 @@ typedef struct
 #if (defined(STM32F446xx) || defined(STM32F407xx) && defined(BXCAN_Protocol))
 	EEM_bxCAN_PeriphBase_st	 	bxHandle;
 #elif (defined(STM32H750xx) && defined(FDCAN_Protocol))
-	EEM_FDCAN_PeriphBase_st  	fdHandle;
+	EEM_FDCAN_PeriphBase_st  	dHandle;
 #else
 #if defined(SPI2CAN_Protocol)
 	EEM_SPI2CAN_PeriphBase_st	spi2canHandle;

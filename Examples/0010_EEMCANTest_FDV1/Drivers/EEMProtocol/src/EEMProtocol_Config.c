@@ -12,15 +12,15 @@
 #include "EEMProtocol.h"
 
 
-	extern BCM_Module_st	BCM_MSG;
+extern BCM_Module_st	BCM_MSG;
 /* HVAC module has been written Cpp language in order to arduino framework */
 /* Simple computer protocol has written pyhton language */
-	extern BMS_Module_st	BMS_MSG;
-	extern MS1_Module_st	MS1_MSG;
-	extern MS2_Module_st	MS2_MSG;
-	extern ISO_Module_st	ISO_MSG;
-	extern TLM_Module_st	TLM_MSG;
-	extern YSB_Module_st	YSB_MSG;
+extern BMS_Module_st	BMS_MSG;
+extern MS1_Module_st	MS1_MSG;
+extern MS2_Module_st	MS2_MSG;
+extern ISO_Module_st	ISO_MSG;
+extern TLM_Module_st	TLM_MSG;
+extern YSB_Module_st	YSB_MSG;
 
 
 
@@ -215,7 +215,7 @@ EEM_ERR_T EEM_FILTER_BCM( EEM_Protocol_obj_st* param )
 
 #if defined(SPI2CAN_Protocol)
 
-
+	 /* MCP2515 Module specific filtering will patch later */
 
 #else
 //ERROR

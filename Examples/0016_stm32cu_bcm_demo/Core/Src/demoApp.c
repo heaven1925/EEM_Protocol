@@ -14,8 +14,8 @@
 EEM_Protocol_st	protocol;
 
 extern BCM_Module_st	BCM_MSG;
-/* HVAC module has been written Cpp language in order to arduino framework */
-/* Simple computer protocol has written pyhton language */
+extern HVAC_Module_st	HVAC_MSG;
+extern SCB_Module_st	SCB_MSG;
 extern BMS_Module_st	BMS_MSG;
 extern MS1_Module_st	MS1_MSG;
 extern MS2_Module_st	MS2_MSG;
@@ -30,16 +30,71 @@ void TIM1_UP_TIM10_IRQHandler(void)
   /* increase tick parameters */
   tickParameter++;
 
+  /* send sequance parameter */
+  static uint8_t sendSequance = 0 ;
+  sendSequance = tickParameter % 6 ; /* mod size of sended message count */
+
   /* Check Can FIFO's */
   EEM_PERIODIC(&protocol.obj.canPacket);
+
 
   /* Send 100ms periodic Data */
   if( ( tickParameter % 10 ) == 0 )
   {
-	  memcpy(&protocol.obj.canPacket.DATA[0] , &BCM_MSG.Message07.payload[0] , 8);
-	  protocol.obj.canPacket.EXTENDED_ID.identifier = BCM_MSG.Message07_ID;
+	  switch( sendSequance )
+	  {
+	  case 0 :
+		  /* Send MSG03 */
+		  memcpy(&protocol.obj.canPacket.DATA[0] , &BCM_MSG.Message03.payload[0] , 8);
+		  protocol.obj.canPacket.EXTENDED_ID.identifier = BCM_MSG.Message03_ID;
+		  protocol.ops.EEM_TX( &protocol.obj.canPacket , 0);
+	  break ;
 
-	  protocol.ops.EEM_TX( &protocol.obj.canPacket , 0);
+	  case 1:
+		  /* Send MSG04 */
+		  memcpy(&protocol.obj.canPacket.DATA[0] , &BCM_MSG.Message04.payload[0] , 8);
+		  protocol.obj.canPacket.EXTENDED_ID.identifier = BCM_MSG.Message04_ID;
+		  protocol.ops.EEM_TX( &protocol.obj.canPacket , 0);
+		  break;
+
+	  case 2:
+		  /* Send MSG05 */
+		  memcpy(&protocol.obj.canPacket.DATA[0] , &BCM_MSG.Message05.payload[0] , 8);
+		  protocol.obj.canPacket.EXTENDED_ID.identifier = BCM_MSG.Message05_ID;
+		  protocol.ops.EEM_TX( &protocol.obj.canPacket , 0);
+	  	  break;
+
+	  case 3:
+		  /* Send MSG11 */
+		  memcpy(&protocol.obj.canPacket.DATA[0] , &BCM_MSG.Message11.payload[0] , 8);
+		  protocol.obj.canPacket.EXTENDED_ID.identifier = BCM_MSG.Message11_ID;
+		  protocol.ops.EEM_TX( &protocol.obj.canPacket , 0);
+	  	  break;
+
+	  case 4:
+		  /* Send MSG12 */
+		  memcpy(&protocol.obj.canPacket.DATA[0] , &BCM_MSG.Message12.payload[0] , 8);
+		  protocol.obj.canPacket.EXTENDED_ID.identifier = BCM_MSG.Message12_ID;
+		  protocol.ops.EEM_TX( &protocol.obj.canPacket , 0);
+	  	  break;
+
+	  case 5:
+		  /* Send MSG19 */
+		  memcpy(&protocol.obj.canPacket.DATA[0] , &BCM_MSG.Message19.payload[0] , 8);
+		  protocol.obj.canPacket.EXTENDED_ID.identifier = BCM_MSG.Message19_ID;
+		  protocol.ops.EEM_TX( &protocol.obj.canPacket , 0);
+	  	  break;
+
+	  case 6:
+		  /* Send MSG20 */
+		  memcpy(&protocol.obj.canPacket.DATA[0] , &BCM_MSG.Message03.payload[0] , 8);
+		  protocol.obj.canPacket.EXTENDED_ID.identifier = BCM_MSG.Message20_ID;
+		  protocol.ops.EEM_TX( &protocol.obj.canPacket , 0);
+		  break;
+
+	  default: break;
+
+	  }
 
 	  /* Toogle Pin every 100ms */
 	  HAL_GPIO_TogglePin(LED_TEST_GPIO_Port, LED_TEST_Pin);
@@ -87,7 +142,11 @@ void applicationMAIN(void)
 
 	while(1)
 	{
-		BCM_MSG.Message08.SPN.MS1_Speed = (uint32_t)getADCValue();
+		BCM_MSG.Message11.SPN.BCM_MS1_Speed = (uint64_t)getADCValue();
+		BCM_MSG.Message12.SPN.BCM_MS2_Speed = ~(uint64_t)getADCValue();
+
+
+
 	}
 
 }

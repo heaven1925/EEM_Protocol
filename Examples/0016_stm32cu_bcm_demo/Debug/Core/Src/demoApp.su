@@ -1,4 +1,4 @@
 ../Core/Src/demoApp.c:28:6:TIM1_UP_TIM10_IRQHandler	8	static
-../Core/Src/demoApp.c:53:11:getADCValue	16	static
-../Core/Src/demoApp.c:70:7:applicationInit	8	static
-../Core/Src/demoApp.c:84:6:applicationMAIN	8	static
+../Core/Src/demoApp.c:108:11:getADCValue	16	static
+../Core/Src/demoApp.c:125:7:applicationInit	8	static
+../Core/Src/demoApp.c:139:6:applicationMAIN	32	static

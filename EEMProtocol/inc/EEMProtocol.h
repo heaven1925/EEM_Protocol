@@ -76,21 +76,26 @@ typedef signed   int               EEM_I32      ; /**< 32bit integer type */
 typedef unsigned char              EEM_U8       ; /**<  8bit unsigned integer type */
 typedef unsigned short             EEM_U16      ; /**< 16bit unsigned integer type */
 typedef unsigned int               EEM_U32      ; /**< 32bit unsigned integer type */
-
+typedef unsigned long long		   EEM_U64		; /**< 64bit unsigned integer type */
 
 /*
 * BOOL Type Definitions
 */
-typedef EEM_U8					   	EEM_BOOL_T  ;
-#define EEM_TRUE                    1             /**< boolean true  */
-#define EEM_FALSE                   0             /**< boolean fails */
+typedef enum
+{
+	EEM_FALSE = 0 ,				/**< boolean true  */
+	EEM_TRUE  = ! EEM_FALSE		/**< boolean fail */
+}EEM_BOOL_T;
 
 /*
 * Error Type Definitions
 */
-typedef EEM_U8					   	EEM_ERR_T   ;
-#define EEM_EOK                      0             /**< There is no error */
-#define EEM_ERROR                    1             /**< A generic error happens */
+typedef enum
+{
+	EEM_ERROR = 0 ,				/**< boolean error  */
+	EEM_EOK  = !EEM_ERROR		/**< boolean okey */
+}EEM_ERR_T;
+
 
 /* null code definition  */
 #define EEM_NULL                     (0)

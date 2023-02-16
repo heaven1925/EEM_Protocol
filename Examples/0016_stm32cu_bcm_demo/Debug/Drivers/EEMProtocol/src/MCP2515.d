@@ -1,5 +1,5 @@
 Drivers/EEMProtocol/src/MCP2515.o: ../Drivers/EEMProtocol/src/MCP2515.c \
- C:/Users/AtakanErtekin/Desktop/WorkSpace/STM_WorkSpace/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/MCP2515.h \
+ C:/Users/AtakanErtekin/Desktop/EEM_Protocol/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/MCP2515.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -32,7 +32,7 @@ Drivers/EEMProtocol/src/MCP2515.o: ../Drivers/EEMProtocol/src/MCP2515.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Core/Inc/main.h
-C:/Users/AtakanErtekin/Desktop/WorkSpace/STM_WorkSpace/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/MCP2515.h:
+C:/Users/AtakanErtekin/Desktop/EEM_Protocol/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/MCP2515.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h:

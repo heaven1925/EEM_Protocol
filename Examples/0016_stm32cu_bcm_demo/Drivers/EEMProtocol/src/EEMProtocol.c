@@ -641,6 +641,34 @@ EEM_ERR_T 	EEM_PERIODIC( EEM_CAN_Packet_st*  param )
 
 	case MESSAGE02 :
 
+		HVAC_MSG.Message02.SPN.HVAC_tempVal_u8 			 = param->DATA[0] ;
+		HVAC_MSG.Message02.SPN.HVAC_humidityVal_u8 		 = param->DATA[1];
+		HVAC_MSG.Message02.SPN.HVAC_smokeVal_u4 		 = (EEM_U8)( param->DATA[2] & 0x0F );
+		HVAC_MSG.Message02.SPN.HVAC_windPressure1_u4 	 = (EEM_U8)(( param->DATA[2] & 0xF0 ) >> 4 );
+		HVAC_MSG.Message02.SPN.HVAC_windPressure2_u4 	 = (EEM_U8)( param->DATA[3] & 0x0F );
+
+		HVAC_MSG.Message02.SPN.HVAC_leftFrontWheel_xy_u8 = (EEM_U8)((EEM_U8)( param->DATA[3] & 0xF0 ) >> 4 ) |
+																    (EEM_U8)( param->DATA[4] & 0x0F );
+
+		HVAC_MSG.Message02.SPN.HVAC_rightFrontWheel_xy_u8 = (EEM_U8)((EEM_U8)( param->DATA[4] & 0xF0 ) >> 4 ) |
+																	 (EEM_U8)( param->DATA[5] & 0x0F );
+
+		HVAC_MSG.Message02.SPN.HVAC_status00_u1 = (EEM_U8)(( param->DATA[5] & 0x10 ) >> 4 );
+		HVAC_MSG.Message02.SPN.HVAC_status01_u1 = (EEM_U8)(( param->DATA[5] & 0x20 ) >> 5 );
+		HVAC_MSG.Message02.SPN.HVAC_status02_u1 = (EEM_U8)(( param->DATA[5] & 0x40 ) >> 6 );
+		HVAC_MSG.Message02.SPN.HVAC_status03_u1 = (EEM_U8)(( param->DATA[5] & 0x80 ) >> 7 );
+
+		HVAC_MSG.Message02.SPN.HVAC_status04_u1 = (EEM_U8)( param->DATA[6] & 0x01 );
+		HVAC_MSG.Message02.SPN.HVAC_status05_u1 = (EEM_U8)(( param->DATA[6] & 0x02 ) >> 1 );
+		HVAC_MSG.Message02.SPN.HVAC_status06_u1 = (EEM_U8)(( param->DATA[6] & 0x04 ) >> 2 );
+		HVAC_MSG.Message02.SPN.HVAC_status07_u1 = (EEM_U8)(( param->DATA[6] & 0x08 ) >> 3 );
+
+		HVAC_MSG.Message02.SPN.HVAC_Hgear_cmd_u3 = (EEM_U8)( param->DATA[6] & 0x07 );
+		HVAC_MSG.Message02.SPN.HVAC_Gear_cmd_u2 = (EEM_U8)(( param->DATA[6] & 0x18) >> 3 );
+		HVAC_MSG.Message02.SPN.HVAC_cmdbit05_u1 = (EEM_U8)(( param->DATA[6] & 0x20 ) >> 5 );
+		HVAC_MSG.Message02.SPN.HVAC_cmdbit06_u1 = (EEM_U8)(( param->DATA[6] & 0x40 ) >> 6 );
+		HVAC_MSG.Message02.SPN.HVAC_cmdbit07_u1 = (EEM_U8)(( param->DATA[6] & 0x80 ) >> 7 );
+
 
 	break;
 
@@ -687,10 +715,6 @@ EEM_ERR_T 	EEM_PERIODIC( EEM_CAN_Packet_st*  param )
 	break;
 
 	case MESSAGE23 :
-
-	break;
-
-	case MESSAGE25 :
 
 	break;
 

@@ -672,54 +672,325 @@ EEM_ERR_T 	EEM_PERIODIC( EEM_CAN_Packet_st*  param )
 
 	break;
 
+	case MESSAGE03 :
+
+		BCM_MSG.Message03.SPN.BCM_differantialSpeed_u64 =
+				(EEM_U64)( ((EEM_U64)param->DATA[0] 	  )	|
+						   ((EEM_U64)param->DATA[1] << 8  )	|
+						   ((EEM_U64)param->DATA[2] << 16 ) |
+						   ((EEM_U64)param->DATA[3] << 24 ) |
+						   ((EEM_U64)param->DATA[4] << 32 ) |
+						   ((EEM_U64)param->DATA[5] << 40 ) |
+						   ((EEM_U64)param->DATA[6] << 48 ) |
+						   ((EEM_U64)param->DATA[7] << 56 ) );
+
+
+	break;
+
+	case MESSAGE04 :
+	    BCM_MSG.Message04.SPN.BCM_SCB_startRecord_u1 	=  (EEM_BOOL_T)(param->DATA[0]&0x01);
+	    BCM_MSG.Message04.SPN.BCM_SCB_stopRecord_u1		=  (EEM_BOOL_T)((param->DATA[0]&0x02)>>1);
+	    BCM_MSG.Message04.SPN.BCM_SCB_deleteRecord_u1   =  (EEM_BOOL_T)((param->DATA[0]&0x04)>>2);
+	    BCM_MSG.Message04.SPN.BCM_SCB_sdCardErase_u1    =  (EEM_BOOL_T)((param->DATA[0]&0x08)>>3);
+	    BCM_MSG.Message04.SPN.BCM_SCB_sdCardSave_u1     =  (EEM_BOOL_T)((param->DATA[0]&0x10)>>4);
+	    BCM_MSG.Message04.SPN.BCM_SCB_dashBoardState_u1 =  (EEM_BOOL_T)((param->DATA[0]&0x20)>>5);
+	    BCM_MSG.Message04.SPN.BCM_SCB_dashBoardCmd01_u1 =  (EEM_BOOL_T)((param->DATA[0]&0x30)>>6);
+	    BCM_MSG.Message04.SPN.BCM_SCB_dashBoardCmd02_u1 =  (EEM_BOOL_T)((param->DATA[0]&0x80)>>7);
+
+	    BCM_MSG.Message04.SPN.BCM_SCB_dashBoardCmd03_u1 =  (EEM_BOOL_T)((param->DATA[1]&0x01));
+	    BCM_MSG.Message04.SPN.BCM_SCB_dashBoardCmd04_u1 =  (EEM_BOOL_T)((param->DATA[1]&0x02)>>1);
+
+	    BCM_MSG.Message04.SPN.BCM_SCB_ignitionStatus_u1 =  (EEM_BOOL_T)((param->DATA[1]&0x08)>>3);
+	    BCM_MSG.Message04.SPN.BCM_SCB_leftSignal_u1     =  (EEM_BOOL_T)((param->DATA[1]&0x20)>>5);
+	    BCM_MSG.Message04.SPN.BCM_SCB_rightSignal_u1    =  (EEM_BOOL_T)((param->DATA[1]&0x40)>>6);
+	    BCM_MSG.Message04.SPN.BCM_SCB_frontLight_u1     =  (EEM_BOOL_T)((param->DATA[1]&0x80)>>7);
+
+	    BCM_MSG.Message04.SPN.BCM_SCB_backLight_u1       = (EEM_BOOL_T)(param->DATA[2]&0x01);
+	    BCM_MSG.Message04.SPN.BCM_SCB_signalLight_u1     = (EEM_BOOL_T)(param->DATA[2]&0x02);
+	    BCM_MSG.Message04.SPN.BCM_SCB_spinnerAngle_u16	 = (EEM_U16)(((param->DATA[2]&0xF8)>>3)|(param->DATA[3]<<5) |((param->DATA[4]&0x07)<<13));
+
+	    BCM_MSG.Message04.SPN.BCM_SCB_gasPedalAnalog_u16 = (EEM_U16)(((param->DATA[4]&0xF8)>>3)| (param->DATA[5]<<5) |(param->DATA[6]&0x07<<13));
+	    BCM_MSG.Message04.SPN.BCM_SCB_leftDirection_u1 =    (EEM_U16)(((param->DATA[6]&0xF8)>>3)| param->DATA[7] |(param->DATA[8]&0x07<<13));
+	    BCM_MSG.Message04.SPN.BCM_SCB_leftDirection_u1 =    (EEM_BOOL_T)((param->DATA[8]&0x08)>>3);
+		BCM_MSG.Message04.SPN.BCM_SCB_leftDirection_u1=      (EEM_BOOL_T)((param->DATA[8]&0x10)>>4);
+
+	break;
+
+	case MESSAGE05 :
+
+		BCM_MSG.Message05.SPN.BCM_leftGyro_u16= (EEM_U16)((param->DATA[0])|(param->DATA[1]<<8));
+		BCM_MSG.Message05.SPN.BCM_leftAcc_u16 = (EEM_U16)((param->DATA[1])|(param->DATA[2]<<8));
+		BCM_MSG.Message05.SPN.BCM_rightAcc_u16=(EEM_U16)((param->DATA[3])|(param->DATA[4]<<8));
+		BCM_MSG.Message05.SPN.BCM_rightGyro_u16=(EEM_U16)((param->DATA[5])|(param->DATA[6]<<8));
+
+	break;
+
+	case MESSAGE06 :
+
+        BCM_MSG.Message06.SPN.VOLTAGE_C1= (EEM_U16)((param->DATA[0])|(param->DATA[1]<<8));
+	    BCM_MSG.Message06.SPN.VOLTAGE_C2= (EEM_U16)((param->DATA[1])|(param->DATA[2]<<8));
+	    BCM_MSG.Message06.SPN.VOLTAGE_C3= (EEM_U16)((param->DATA[3])|(param->DATA[4]<<8));
+	    BCM_MSG.Message06.SPN.VOLTAGE_C4= (EEM_U16)((param->DATA[5])|(param->DATA[6]<<8));
+
+
+	break;
+
+
 	case MESSAGE07 :
+
+		 BCM_MSG.Message07.SPN.VOLTAGE_C5= (EEM_U16)((param->DATA[0])|(param->DATA[1]<<8));
+		 BCM_MSG.Message07.SPN.VOLTAGE_C6= (EEM_U16)((param->DATA[1])|(param->DATA[2]<<8));
+		 BCM_MSG.Message07.SPN.VOLTAGE_C7= (EEM_U16)((param->DATA[3])|(param->DATA[4]<<8));
+		 BCM_MSG.Message07.SPN.VOLTAGE_C8= (EEM_U16)((param->DATA[5])|(param->DATA[6]<<8));
+
+
 
 	break;
 
 	case MESSAGE08 :
 
+		 BCM_MSG.Message08.SPN.VOLTAGE_C9= (EEM_U16)((param->DATA[0])|(param->DATA[1]<<8));
+		 BCM_MSG.Message08.SPN.VOLTAGE_C10= (EEM_U16)((param->DATA[1])|(param->DATA[2]<<8));
+		 BCM_MSG.Message08.SPN.VOLTAGE_C11= (EEM_U16)((param->DATA[3])|(param->DATA[4]<<8));
+		 BCM_MSG.Message08.SPN.VOLTAGE_C12= (EEM_U16)((param->DATA[5])|(param->DATA[6]<<8));
+
 	break;
 
 	case MESSAGE09 :
+
+		 BCM_MSG.Message09.SPN.VOLTAGE_C13= (EEM_U16)((param->DATA[0])|(param->DATA[1]<<8));
+		 BCM_MSG.Message09.SPN.VOLTAGE_C14= (EEM_U16)((param->DATA[1])|(param->DATA[2]<<8));
+		 BCM_MSG.Message09.SPN.VOLTAGE_C15= (EEM_U16)((param->DATA[3])|(param->DATA[4]<<8));
+		 BCM_MSG.Message09.SPN.VOLTAGE_C16= (EEM_U16)((param->DATA[5])|(param->DATA[6]<<8));
+
 
 	break;
 
 	case MESSAGE10 :
 
+		BCM_MSG.Message10.SPN.VOLTAGE_C17=(EEM_U16)((param->DATA[0])|(param->DATA[1]<<8));
+		BCM_MSG.Message10.SPN.VOLTAGE_C18=(EEM_U16)((param->DATA[2])|(param->DATA[3]<<8));
+		BCM_MSG.Message10.SPN.TEMP=(EEM_U16)((param->DATA[4])|(param->DATA[5]<<8));
+		BCM_MSG.Message10.SPN.CURRENT=(EEM_U16)((param->DATA[6])|(param->DATA[7]<<8));
+
 	break;
+
+	case MESSAGE11 :
+
+		BCM_MSG.Message11.SPN.BCM_MS1_Speed=(EEM_U16)(param->DATA[0]|
+				                             (EEM_U16)(param->DATA[1])<<8);
+
+		break;
+
+	case MESSAGE12 :
+
+		BCM_MSG.Message12.SPN.BCM_MS2_Speed=(EEM_U16)(param->DATA[0]|
+                                             (EEM_U16)(param->DATA[1])<<8);
+
+		break;
+
+	case MESSAGE13 :
+
+		MS1_MSG.Message13.SPN.MS1_Mode=(EEM_U8)(param->DATA[0]);
+		MS1_MSG.Message13.SPN.MS1_temperature=(EEM_U16)(param->DATA[1])|
+				                       (EEM_U16)((param->DATA[2])<<8);
+
+		MS1_MSG.Message13.SPN.MS1_warningFlag01=(EEM_BOOL_T)(param->DATA[3]&0x01);
+		MS1_MSG.Message13.SPN.MS1_warningFlag02=(EEM_BOOL_T)((param->DATA[3]&0x02)>>1);
+		MS1_MSG.Message13.SPN.MS1_warningFlag03=(EEM_BOOL_T)((param->DATA[3]&0x04)>>2);
+		MS1_MSG.Message13.SPN.MS1_warningFlag04=(EEM_BOOL_T)((param->DATA[3]&0x08)>>3);
+		MS1_MSG.Message13.SPN.MS1_warningFlag05=(EEM_BOOL_T)((param->DATA[3]&0x10)>>4);
+		MS1_MSG.Message13.SPN.MS1_warningFlag06=(EEM_BOOL_T)((param->DATA[3]&0x20)>>5);
+		MS1_MSG.Message13.SPN.MS1_warningFlag07=(EEM_BOOL_T)((param->DATA[3]&0x30)>>6);
+		MS1_MSG.Message13.SPN.MS1_warningFlag08=(EEM_BOOL_T)((param->DATA[3]&0x40)>>7);
+
+		MS1_MSG.Message13.SPN.MS1_errorFlag01=  (EEM_BOOL_T)(param->DATA[4]&0x01);
+		MS1_MSG.Message13.SPN.MS1_errorFlag02=  (EEM_BOOL_T)((param->DATA[4]&0x02)>>1);
+		MS1_MSG.Message13.SPN.MS1_errorFlag03=  (EEM_BOOL_T)((param->DATA[4]&0x04)>>2);
+		MS1_MSG.Message13.SPN.MS1_errorFlag04=  (EEM_BOOL_T)((param->DATA[4]&0x08)>>3);
+		MS1_MSG.Message13.SPN.MS1_errorFlag05=  (EEM_BOOL_T)((param->DATA[4]&0x10)>>4);
+		MS1_MSG.Message13.SPN.MS1_errorFlag06=  (EEM_BOOL_T)((param->DATA[4]&0x20)>>5);
+		MS1_MSG.Message13.SPN.MS1_errorFlag07=  (EEM_BOOL_T)((param->DATA[4]&0x40)>>6);
+		MS1_MSG.Message13.SPN.MS1_errorFlag08=  (EEM_BOOL_T)((param->DATA[4]&0x80)>>7);
+
+		MS1_MSG.Message13.SPN.MS1_statusBit01 =  (EEM_BOOL_T)(param->DATA[5]&0x01);
+		MS1_MSG.Message13.SPN.MS1_statusBit02 =  (EEM_BOOL_T)((param->DATA[5]&0x02)>>1);
+		MS1_MSG.Message13.SPN.MS1_statusBit03 =  (EEM_BOOL_T)((param->DATA[5]&0x04)>>2);
+		MS1_MSG.Message13.SPN.MS1_statusBit04 =  (EEM_BOOL_T)((param->DATA[5]&0x08)>>3);
+		MS1_MSG.Message13.SPN.MS1_statusBit05 =  (EEM_BOOL_T)((param->DATA[5]&0x10)>>4);
+		MS1_MSG.Message13.SPN.MS1_statusBit06 =  (EEM_BOOL_T)((param->DATA[5]&0x20)>>5);
+		MS1_MSG.Message13.SPN.MS1_statusBit07 =  (EEM_BOOL_T)((param->DATA[5]&0x40)>>6);
+        MS1_MSG.Message13.SPN.MS1_statusBit08 =  (EEM_BOOL_T)((param->DATA[5]&0x80)>>7);
+
+
+		break;
+
+	case MESSAGE14 :
+		MS1_MSG.Message14.SPN.MS1_voltage        = (EEM_U16)(param->DATA[0])|
+		                                 (EEM_U16)(param->DATA[1]<<8);
+
+		MS1_MSG.Message14.SPN.MS1_PhaseUCurrent  = (EEM_U16)(param->DATA[1])|
+	                                   (EEM_U16)(param->DATA[2]<<8);
+
+		MS1_MSG.Message14.SPN.MS1_PhaseVCurrent  = (EEM_U16)((param->DATA[3])|
+		                                   (EEM_U16)(param->DATA[4]<<8));
+
+		MS1_MSG.Message14.SPN.MS1_PhaseWCurrent  = (EEM_U16)((param->DATA[5])|
+				                                   (EEM_U16)(param->DATA[6]<<8));
+
+		break;
+	case MESSAGE15 :
+
+		MS1_MSG.Message15.SPN.MS1_SpeedVal=
+				(EEM_U64)( ((EEM_U64)param->DATA[0] 	  )	|
+						   ((EEM_U64)param->DATA[1] << 8  )	|
+						   ((EEM_U64)param->DATA[2] << 16 ) |
+						   ((EEM_U64)param->DATA[3] << 24 ) |
+						   ((EEM_U64)param->DATA[4] << 32 ) |
+						   ((EEM_U64)param->DATA[5] << 40 ) |
+						   ((EEM_U64)param->DATA[6] << 48 ) |
+						   ((EEM_U64)param->DATA[7] << 56 ) );
+
+
+		break;
+
+
+	case MESSAGE16 :
+		MS2_MSG.Message16.SPN.MS2_Mode		=(EEM_U8)(param->DATA[0]);
+		MS2_MSG.Message16.SPN.MS2_temperature=(EEM_U16)(param->DATA[1])|(EEM_U16)((param->DATA[2])<<8);
+
+		MS2_MSG.Message16.SPN.MS2_warningFlag01=(EEM_BOOL_T)(param->DATA[3]&0x01);
+		MS2_MSG.Message16.SPN.MS2_warningFlag02=(EEM_BOOL_T)((param->DATA[3]&0x02)>>1);
+		MS2_MSG.Message16.SPN.MS2_warningFlag03=(EEM_BOOL_T)((param->DATA[3]&0x04)>>2);
+		MS2_MSG.Message16.SPN.MS2_warningFlag04=(EEM_BOOL_T)((param->DATA[3]&0x08)>>3);
+		MS2_MSG.Message16.SPN.MS2_warningFlag05=(EEM_BOOL_T)((param->DATA[3]&0x10)>>4);
+		MS2_MSG.Message16.SPN.MS2_warningFlag06=(EEM_BOOL_T)((param->DATA[3]&0x20)>>5);
+		MS2_MSG.Message16.SPN.MS2_warningFlag07=(EEM_BOOL_T)((param->DATA[3]&0x30)>>6);
+		MS2_MSG.Message16.SPN.MS2_warningFlag08=(EEM_BOOL_T)((param->DATA[3]&0x40)>>7);
+
+		MS2_MSG.Message16.SPN.MS2_errorFlag01=  (EEM_BOOL_T)(param->DATA[4]&0x01);
+		MS2_MSG.Message16.SPN.MS2_errorFlag02=  (EEM_BOOL_T)((param->DATA[4]&0x02)>>1);
+		MS2_MSG.Message16.SPN.MS2_errorFlag03=  (EEM_BOOL_T)((param->DATA[4]&0x04)>>2);
+		MS2_MSG.Message16.SPN.MS2_errorFlag04=  (EEM_BOOL_T)((param->DATA[4]&0x08)>>3);
+		MS2_MSG.Message16.SPN.MS2_errorFlag05=  (EEM_BOOL_T)((param->DATA[4]&0x10)>>4);
+		MS2_MSG.Message16.SPN.MS2_errorFlag06=  (EEM_BOOL_T)((param->DATA[4]&0x20)>>5);
+		MS2_MSG.Message16.SPN.MS2_errorFlag07=  (EEM_BOOL_T)((param->DATA[4]&0x40)>>6);
+		MS2_MSG.Message16.SPN.MS2_errorFlag08=  (EEM_BOOL_T)((param->DATA[4]&0x80)>>7);
+
+		MS2_MSG.Message16.SPN.MS2_statusBit01 =  (EEM_BOOL_T)(param->DATA[5]&0x01);
+		MS2_MSG.Message16.SPN.MS2_statusBit02 =  (EEM_BOOL_T)((param->DATA[5]&0x02)>>1);
+		MS2_MSG.Message16.SPN.MS2_statusBit03 =  (EEM_BOOL_T)((param->DATA[5]&0x04)>>2);
+		MS2_MSG.Message16.SPN.MS2_statusBit04 =  (EEM_BOOL_T)((param->DATA[5]&0x08)>>3);
+		MS2_MSG.Message16.SPN.MS2_statusBit05 =  (EEM_BOOL_T)((param->DATA[5]&0x10)>>4);
+		MS2_MSG.Message16.SPN.MS2_statusBit06 =  (EEM_BOOL_T)((param->DATA[5]&0x20)>>5);
+		MS2_MSG.Message16.SPN.MS2_statusBit07 =  (EEM_BOOL_T)((param->DATA[5]&0x40)>>6);
+		MS2_MSG.Message16.SPN.MS2_statusBit08 =  (EEM_BOOL_T)((param->DATA[5]&0x80)>>7);
+
+	break;
+
+
+	case MESSAGE17 :
+
+		        MS2_MSG.Message17.SPN.MS2_voltage  = (EEM_U16)(param->DATA[0])|
+				                                          (EEM_U16)(param->DATA[1]<<8);
+
+				MS2_MSG.Message17.SPN.MS2_PhaseUCurrent  = (EEM_U16)(param->DATA[1])|
+				                  (EEM_U16)(param->DATA[2]<<8);
+
+				MS2_MSG.Message17.SPN.MS2_PhaseVCurrent  = (EEM_U16)((param->DATA[3])|
+				                  (EEM_U16)(param->DATA[4]<<8));
+
+				MS2_MSG.Message17.SPN.MS2_PhaseWCurrent  = (EEM_U16)((param->DATA[5])|
+						                                   (EEM_U16)(param->DATA[6]<<8));
+
+
+
+
+	break;
+
 
 	case MESSAGE18 :
 
-	break;
+		MS2_MSG.Message18.SPN.MS2_SpeedVal =
+						(EEM_U64)  ((EEM_U64)param->DATA[0] 	  )	|
+								   ((EEM_U64)param->DATA[1] << 8  )	|
+								   ((EEM_U64)param->DATA[2] << 16 ) |
+								   ((EEM_U64)param->DATA[3] << 24 ) |
+								   ((EEM_U64)param->DATA[4] << 32 ) |
+								   ((EEM_U64)param->DATA[5] << 40 ) |
+								   ((EEM_U64)param->DATA[6] << 48 ) |
+								   ((EEM_U64)param->DATA[7] << 56  );
 
+
+
+
+
+	break;
 
 	case MESSAGE19 :
 
-	break;
+		BCM_MSG.Message19.SPN.BCM_MS1_Mode=(EEM_U8)(param->DATA[0]);
 
-
-	case MESSAGE24 :
 
 	break;
 
 	case MESSAGE20 :
 
+		BCM_MSG.Message20.SPN.BCM_MS2_Mode=(EEM_U8)(param->DATA[0]);
+
+
+
+
 	break;
 
 	case MESSAGE21 :
+
+         SCB_MSG.Message21.SPN.SCB_cameraStartACK_u1    =(EEM_U8)(param->DATA[0]&0x01);
+         SCB_MSG.Message21.SPN.SCB_cameraStartNACK_u1   =(EEM_U8)((param->DATA[0]&0x02)>>1);
+         SCB_MSG.Message21.SPN.SCB_cameraStopACK_u1	    =(EEM_U8)((param->DATA[0]&0x04)>>2);
+         SCB_MSG.Message21.SPN.SCB_cameraStopNACK_u1	=(EEM_U8)((param->DATA[0]&0x08)>>3);
+         SCB_MSG.Message21.SPN.SCB_sdCardErase_ACK_u1	=(EEM_U8)((param->DATA[0]&0x10)>>4);
+         SCB_MSG.Message21.SPN.SCB_sdCardErase_NACK_u1	=(EEM_U8)((param->DATA[0]&0x20)>>5);
+         SCB_MSG.Message21.SPN.SCB_sdCardSave_ACK_u1	=(EEM_U8)((param->DATA[0]&0x40)>>6);
+         SCB_MSG.Message21.SPN.SCB_sdCardSave_NACK_u1	=(EEM_U8)((param->DATA[0]&0x80)>>7);
+         SCB_MSG.Message21.SPN.SCB_loggerByte01 		=(EEM_U8)(param->DATA[1]);
+         SCB_MSG.Message21.SPN.SCB_loggerByte02 		=(EEM_U8)(param->DATA[2]);
+         SCB_MSG.Message21.SPN.SCB_loggerByte03 		=(EEM_U8)(param->DATA[3]);
+         SCB_MSG.Message21.SPN.SCB_loggerByte04 		=(EEM_U8)(param->DATA[4]);
+         SCB_MSG.Message21.SPN.SCB_loggerByte05 		=(EEM_U8)(param->DATA[5]);
+         SCB_MSG.Message21.SPN.SCB_loggerByte06 		=(EEM_U8)(param->DATA[6]);
 
 	break;
 
 	case MESSAGE22 :
 
+		TLM_MSG.Message22.SPN.TLM_wifiStatus_u8= (EEM_U8)(param->DATA[0]);
+		TLM_MSG.Message22.SPN.TLM_wifiCmd01_u8=  (EEM_U8)(param->DATA[1]);
+		TLM_MSG.Message22.SPN.TLM_wifiCmd02_u8=  (EEM_U8)(param->DATA[2]);
+		TLM_MSG.Message22.SPN.TLM_wifiCmd03_u8=  (EEM_U8)(param->DATA[3]);
+		TLM_MSG.Message22.SPN.TLM_wifiCmd04_u8=  (EEM_U8)(param->DATA[4]);
+		TLM_MSG.Message22.SPN.TLM_wifiCmd05_u8=  (EEM_U8)(param->DATA[5]);
+		TLM_MSG.Message22.SPN.TLM_wifiCmd06_u8=  (EEM_U8)(param->DATA[6]);
+		TLM_MSG.Message22.SPN.TLM_wifiCmd07_u8=  (EEM_U8)(param->DATA[7]);
+
+
 	break;
 
 	case MESSAGE23 :
 
+       TLM_MSG.Message23.SPN.TLM_rfStatus_u8= (EEM_U8)(param->DATA[0]);
+       TLM_MSG.Message23.SPN.TLM_rfCmd01_u8= (EEM_U8)(param->DATA[1]);
+       TLM_MSG.Message23.SPN.TLM_rfCmd02_u8= (EEM_U8)(param->DATA[2]);
+       TLM_MSG.Message23.SPN.TLM_rfCmd03_u8= (EEM_U8)(param->DATA[3]);
+       TLM_MSG.Message23.SPN.TLM_rfCmd04_u8= (EEM_U8)(param->DATA[4]);
+       TLM_MSG.Message23.SPN.TLM_rfCmd05_u8= (EEM_U8)(param->DATA[5]);
+       TLM_MSG.Message23.SPN.TLM_rfCmd06_u8= (EEM_U8)(param->DATA[6]);
+       TLM_MSG.Message23.SPN.TLM_rfCmd07_u8= (EEM_U8)(param->DATA[7]);
+
 	break;
 
 
-	}
+
 
 	
 	return result;
@@ -748,6 +1019,7 @@ EEM_BOOL_T	EEM_IS_EMPTY( const EEM_RING_Buffer_st* buffer )
 EEM_BOOL_T	EEM_IS_FULL( const EEM_RING_Buffer_st* buffer )
 {
 	  return buffer->full;
+
 }
 
 

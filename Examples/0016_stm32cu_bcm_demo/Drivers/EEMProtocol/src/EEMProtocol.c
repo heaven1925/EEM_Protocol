@@ -11,6 +11,8 @@
 #include "EEMProtocol.h"
 #include "EEMProtocol_Config.h"
 
+#pragma message "EGE ELEKTROMOBIL CAN STACK BUILDING"
+
 const	EEM_Protocol_opr_st		ops = 
 {
 	EEM_INIT		,
@@ -126,189 +128,189 @@ EEM_ERR_T EEM_INIT( EEM_Protocol_obj_st*  param )
 	/* Message Identifier Handler */
 	EEM_CAN_ID_st ID[SIZE_OF_MSG] = {0};
 
-	ID[0].Pages.priority 	= PRIORITY_010 ;
-	ID[0].Pages.reserved 	= NOT_RESERVED ;
-	ID[0].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[0].Pages.messageID 	= MESSAGE01 ;
-	ID[0].Pages.DA 			= BCM_NODE;
-	ID[0].Pages.SA 			= HVAC_NODE ;
-	HVAC_MSG.Message01_ID = ID[0].identifier ;
+	ID[MSG01_INDEX].Pages.priority 		= PRIORITY_010 ;
+	ID[MSG01_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG01_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG01_INDEX].Pages.messageID 	= MESSAGE01 ;
+	ID[MSG01_INDEX].Pages.DA 			= BCM_NODE;
+	ID[MSG01_INDEX].Pages.SA 			= HVAC_NODE ;
+	HVAC_MSG.Message01_ID = ID[MSG01_INDEX].identifier ;
 
-	ID[1].Pages.priority 	= PRIORITY_010 ;
-	ID[1].Pages.reserved 	= NOT_RESERVED ;
-	ID[1].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[1].Pages.messageID 	= MESSAGE02 ;
-	ID[1].Pages.DA 			= BCM_NODE;
-	ID[1].Pages.SA 			= HVAC_NODE ;
-	HVAC_MSG.Message02_ID = ID[1].identifier ;
+	ID[MSG02_INDEX].Pages.priority 		= PRIORITY_010 ;
+	ID[MSG02_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG02_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG02_INDEX].Pages.messageID 	= MESSAGE02 ;
+	ID[MSG02_INDEX].Pages.DA 			= BCM_NODE;
+	ID[MSG02_INDEX].Pages.SA 			= HVAC_NODE ;
+	HVAC_MSG.Message02_ID = ID[MSG02_INDEX].identifier ;
 
-	ID[2].Pages.priority 	= PRIORITY_100 ;
-	ID[2].Pages.reserved 	= NOT_RESERVED ;
-	ID[2].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[2].Pages.messageID 	= MESSAGE03 ;
-	ID[2].Pages.DA 			= TLM_NODE;
-	ID[2].Pages.SA 			= BCM_NODE;
-	BCM_MSG.Message03_ID = ID[2].identifier ;
+	ID[MSG03_INDEX].Pages.priority 		= PRIORITY_100 ;
+	ID[MSG03_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG03_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG03_INDEX].Pages.messageID 	= MESSAGE03 ;
+	ID[MSG03_INDEX].Pages.DA 			= TLM_NODE;
+	ID[MSG03_INDEX].Pages.SA 			= BCM_NODE;
+	BCM_MSG.Message03_ID = ID[MSG03_INDEX].identifier ;
 
-	ID[3].Pages.priority 	= PRIORITY_100 ;
-	ID[3].Pages.reserved 	= NOT_RESERVED ;
-	ID[3].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[3].Pages.messageID 	= MESSAGE04 ;
-	ID[3].Pages.DA 			= SCB_NODE;
-	ID[3].Pages.SA 			= BCM_NODE;
-	BCM_MSG.Message04_ID = ID[3].identifier ;
+	ID[MSG04_INDEX].Pages.priority 		= PRIORITY_100 ;
+	ID[MSG04_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG04_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG04_INDEX].Pages.messageID 	= MESSAGE04 ;
+	ID[MSG04_INDEX].Pages.DA 			= SCB_NODE;
+	ID[MSG04_INDEX].Pages.SA 			= BCM_NODE;
+	BCM_MSG.Message04_ID = ID[MSG04_INDEX].identifier ;
 
-	ID[4].Pages.priority 	= PRIORITY_100 ;
-	ID[4].Pages.reserved 	= NOT_RESERVED ;
-	ID[4].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[4].Pages.messageID 	= MESSAGE05 ;
-	ID[4].Pages.DA 			= SCB_NODE;
-	ID[4].Pages.SA 			= BCM_NODE;
-	BCM_MSG.Message05_ID = ID[4].identifier ;
+	ID[MSG05_INDEX].Pages.priority 		= PRIORITY_100 ;
+	ID[MSG05_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG05_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG05_INDEX].Pages.messageID 	= MESSAGE05 ;
+	ID[MSG05_INDEX].Pages.DA 			= SCB_NODE;
+	ID[MSG05_INDEX].Pages.SA 			= BCM_NODE;
+	BCM_MSG.Message05_ID = ID[MSG05_INDEX].identifier ;
 
-	ID[5].Pages.priority 	= PRIORITY_100 ;
-	ID[5].Pages.reserved 	= NOT_RESERVED ;
-	ID[5].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[5].Pages.messageID 	= MESSAGE06 ;
-	ID[5].Pages.DA 			= SCB_NODE;
-	ID[5].Pages.SA 			= BMS_NODE;
-	BMS_MSG.Message06_ID = ID[5].identifier ;
+	ID[MSG06_INDEX].Pages.priority 		= PRIORITY_100 ;
+	ID[MSG06_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG06_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG06_INDEX].Pages.messageID 	= MESSAGE06 ;
+	ID[MSG06_INDEX].Pages.DA 			= SCB_NODE;
+	ID[MSG06_INDEX].Pages.SA 			= BMS_NODE;
+	BMS_MSG.Message06_ID = ID[MSG06_INDEX].identifier ;
 
-	ID[6].Pages.priority 	= PRIORITY_100 ;
-	ID[6].Pages.reserved 	= NOT_RESERVED ;
-	ID[6].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[6].Pages.messageID 	= MESSAGE07 ;
-	ID[6].Pages.DA 			= SCB_NODE;
-	ID[6].Pages.SA 			= BMS_NODE;
-	BMS_MSG.Message07_ID = ID[6].identifier ;
+	ID[MSG07_INDEX].Pages.priority 		= PRIORITY_100 ;
+	ID[MSG07_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG07_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG07_INDEX].Pages.messageID 	= MESSAGE07 ;
+	ID[MSG07_INDEX].Pages.DA 			= SCB_NODE;
+	ID[MSG07_INDEX].Pages.SA 			= BMS_NODE;
+	BMS_MSG.Message07_ID = ID[MSG07_INDEX].identifier ;
 
-	ID[7].Pages.priority 	= PRIORITY_100 ;
-	ID[7].Pages.reserved 	= NOT_RESERVED ;
-	ID[7].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[7].Pages.messageID 	= MESSAGE08 ;
-	ID[7].Pages.DA 			= SCB_NODE;
-	ID[7].Pages.SA 			= BMS_NODE;
-	BMS_MSG.Message08_ID = ID[7].identifier ;
+	ID[MSG08_INDEX].Pages.priority 		= PRIORITY_100 ;
+	ID[MSG08_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG08_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG08_INDEX].Pages.messageID 	= MESSAGE08 ;
+	ID[MSG08_INDEX].Pages.DA 			= SCB_NODE;
+	ID[MSG08_INDEX].Pages.SA 			= BMS_NODE;
+	BMS_MSG.Message08_ID = ID[MSG08_INDEX].identifier ;
 
-	ID[8].Pages.priority 	= PRIORITY_100 ;
-	ID[8].Pages.reserved 	= NOT_RESERVED ;
-	ID[8].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[8].Pages.messageID 	= MESSAGE09 ;
-	ID[8].Pages.DA 			= SCB_NODE;
-	ID[8].Pages.SA 			= BMS_NODE;
-	BMS_MSG.Message09_ID = ID[8].identifier ;
+	ID[MSG09_INDEX].Pages.priority 		= PRIORITY_100 ;
+	ID[MSG09_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG09_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG09_INDEX].Pages.messageID 	= MESSAGE09 ;
+	ID[MSG09_INDEX].Pages.DA 			= SCB_NODE;
+	ID[MSG09_INDEX].Pages.SA 			= BMS_NODE;
+	BMS_MSG.Message09_ID = ID[MSG09_INDEX].identifier ;
 
-	ID[9].Pages.priority 	= PRIORITY_100 ;
-	ID[9].Pages.reserved 	= NOT_RESERVED ;
-	ID[9].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[9].Pages.messageID 	= MESSAGE10 ;
-	ID[9].Pages.DA 			= SCB_NODE;
-	ID[9].Pages.SA 			= BMS_NODE;
-	BMS_MSG.Message10_ID = ID[9].identifier ;
+	ID[MSG10_INDEX].Pages.priority 		= PRIORITY_100 ;
+	ID[MSG10_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG10_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG10_INDEX].Pages.messageID 	= MESSAGE10 ;
+	ID[MSG10_INDEX].Pages.DA 			= SCB_NODE;
+	ID[MSG10_INDEX].Pages.SA 			= BMS_NODE;
+	BMS_MSG.Message10_ID = ID[MSG10_INDEX].identifier ;
 
-	ID[10].Pages.priority 	= PRIORITY_001 ;
-	ID[10].Pages.reserved 	= NOT_RESERVED ;
-	ID[10].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[10].Pages.messageID 	= MESSAGE11 ;
-	ID[10].Pages.DA 		= MS1_NODE;
-	ID[10].Pages.SA 		= BCM_NODE ;
-	BCM_MSG.Message11_ID = ID[10].identifier ;
+	ID[MSG11_INDEX].Pages.priority 		= PRIORITY_001 ;
+	ID[MSG11_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG11_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG11_INDEX].Pages.messageID 	= MESSAGE11 ;
+	ID[MSG11_INDEX].Pages.DA 			= MS1_NODE;
+	ID[MSG11_INDEX].Pages.SA 			= BCM_NODE ;
+	BCM_MSG.Message11_ID = ID[MSG11_INDEX].identifier ;
 
-	ID[11].Pages.priority 	= PRIORITY_001 ;
-	ID[11].Pages.reserved 	= NOT_RESERVED ;
-	ID[11].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[11].Pages.messageID 	= MESSAGE12 ;
-	ID[11].Pages.DA 		= MS2_NODE;
-	ID[11].Pages.SA 		= BCM_NODE ;
-	BCM_MSG.Message12_ID = ID[11].identifier ;
+	ID[MSG12_INDEX].Pages.priority 		= PRIORITY_001 ;
+	ID[MSG12_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG12_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG12_INDEX].Pages.messageID 	= MESSAGE12 ;
+	ID[MSG12_INDEX].Pages.DA 			= MS2_NODE;
+	ID[MSG12_INDEX].Pages.SA 			= BCM_NODE ;
+	BCM_MSG.Message12_ID = ID[MSG12_INDEX].identifier ;
 
-	ID[12].Pages.priority 	= PRIORITY_001 ;
-	ID[12].Pages.reserved 	= NOT_RESERVED ;
-	ID[12].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[12].Pages.messageID 	= MESSAGE13 ;
-	ID[12].Pages.DA 		= BCM_NODE ;
-	ID[12].Pages.SA 		= MS1_NODE ;
-	MS1_MSG.Message13_ID = ID[12].identifier ;
+	ID[MSG13_INDEX].Pages.priority 		= PRIORITY_001 ;
+	ID[MSG13_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG13_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG13_INDEX].Pages.messageID 	= MESSAGE13 ;
+	ID[MSG13_INDEX].Pages.DA 			= BCM_NODE ;
+	ID[MSG13_INDEX].Pages.SA 			= MS1_NODE ;
+	MS1_MSG.Message13_ID = ID[MSG13_INDEX].identifier ;
 
-	ID[13].Pages.priority 	= PRIORITY_001 ;
-	ID[13].Pages.reserved 	= NOT_RESERVED ;
-	ID[13].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[13].Pages.messageID 	= MESSAGE14 ;
-	ID[13].Pages.DA 		= BCM_NODE ;
-	ID[13].Pages.SA 		= MS1_NODE ;
-	MS1_MSG.Message14_ID = ID[13].identifier ;
+	ID[MSG14_INDEX].Pages.priority 		= PRIORITY_001 ;
+	ID[MSG14_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG14_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG14_INDEX].Pages.messageID 	= MESSAGE14 ;
+	ID[MSG14_INDEX].Pages.DA 			= BCM_NODE ;
+	ID[MSG14_INDEX].Pages.SA 			= MS1_NODE ;
+	MS1_MSG.Message14_ID = ID[MSG14_INDEX].identifier ;
 
-	ID[14].Pages.priority 	= PRIORITY_001 ;
-	ID[14].Pages.reserved 	= NOT_RESERVED ;
-	ID[14].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[14].Pages.messageID 	= MESSAGE15 ;
-	ID[14].Pages.DA 		= BCM_NODE ;
-	ID[14].Pages.SA 		= MS1_NODE ;
-	MS1_MSG.Message15_ID = ID[14].identifier ;
+	ID[MSG15_INDEX].Pages.priority 		= PRIORITY_001 ;
+	ID[MSG15_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG15_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG15_INDEX].Pages.messageID 	= MESSAGE15 ;
+	ID[MSG15_INDEX].Pages.DA 			= BCM_NODE ;
+	ID[MSG15_INDEX].Pages.SA 			= MS1_NODE ;
+	MS1_MSG.Message15_ID = ID[MSG15_INDEX].identifier ;
 
-    ID[15].Pages.priority 	= PRIORITY_001 ;
-    ID[15].Pages.reserved 	= NOT_RESERVED ;
-    ID[15].Pages.dataPoint 	= DATAPAGE_0 ;
-    ID[15].Pages.messageID 	= MESSAGE16 ;
-    ID[15].Pages.DA 		= BCM_NODE ;
-    ID[15].Pages.SA 		= MS2_NODE ;
-    MS2_MSG.Message16_ID = ID[15].identifier ;
+    ID[MSG16_INDEX].Pages.priority 		= PRIORITY_001 ;
+    ID[MSG16_INDEX].Pages.reserved 		= NOT_RESERVED ;
+    ID[MSG16_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+    ID[MSG16_INDEX].Pages.messageID 	= MESSAGE16 ;
+    ID[MSG16_INDEX].Pages.DA 			= BCM_NODE ;
+    ID[MSG16_INDEX].Pages.SA 			= MS2_NODE ;
+    MS2_MSG.Message16_ID = ID[MSG16_INDEX].identifier ;
 
-	ID[16].Pages.priority 	= PRIORITY_001 ;
-	ID[16].Pages.reserved 	= NOT_RESERVED ;
-	ID[16].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[16].Pages.messageID 	= MESSAGE17 ;
-	ID[16].Pages.DA 		= BCM_NODE ;
-	ID[16].Pages.SA 		= MS2_NODE ;
-	MS2_MSG.Message17_ID = ID[16].identifier ;
+	ID[MSG17_INDEX].Pages.priority 		= PRIORITY_001 ;
+	ID[MSG17_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG17_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG17_INDEX].Pages.messageID 	= MESSAGE17 ;
+	ID[MSG17_INDEX].Pages.DA 			= BCM_NODE ;
+	ID[MSG17_INDEX].Pages.SA 			= MS2_NODE ;
+	MS2_MSG.Message17_ID = ID[MSG17_INDEX].identifier ;
 
-	ID[17].Pages.priority 	= PRIORITY_001 ;
-	ID[17].Pages.reserved 	= NOT_RESERVED ;
-	ID[17].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[17].Pages.messageID 	= MESSAGE18 ;
-	ID[17].Pages.DA 		= BCM_NODE ;
-	ID[17].Pages.SA 		= MS2_NODE ;
-	MS2_MSG.Message18_ID = ID[17].identifier ;
+	ID[MSG18_INDEX].Pages.priority 		= PRIORITY_001 ;
+	ID[MSG18_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG18_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG18_INDEX].Pages.messageID 	= MESSAGE18 ;
+	ID[MSG18_INDEX].Pages.DA 			= BCM_NODE ;
+	ID[MSG18_INDEX].Pages.SA 			= MS2_NODE ;
+	MS2_MSG.Message18_ID = ID[MSG18_INDEX].identifier ;
 
-	ID[18].Pages.priority 	= PRIORITY_001 ;
-	ID[18].Pages.reserved 	= NOT_RESERVED ;
-	ID[18].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[18].Pages.messageID 	= MESSAGE19 ;
-	ID[18].Pages.DA 		= BCM_NODE ;
-	ID[18].Pages.SA 		= MS1_NODE ;
-	BCM_MSG.Message19_ID = ID[18].identifier ;
+	ID[MSG19_INDEX].Pages.priority 		= PRIORITY_001 ;
+	ID[MSG19_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG19_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG19_INDEX].Pages.messageID 	= MESSAGE19 ;
+	ID[MSG19_INDEX].Pages.DA 			= BCM_NODE ;
+	ID[MSG19_INDEX].Pages.SA 			= MS1_NODE ;
+	BCM_MSG.Message19_ID = ID[MSG19_INDEX].identifier ;
 
-	ID[19].Pages.priority 	= PRIORITY_001 ;
-	ID[19].Pages.reserved 	= NOT_RESERVED ;
-	ID[19].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[19].Pages.messageID 	= MESSAGE20 ;
-	ID[19].Pages.DA 		= BCM_NODE ;
-	ID[19].Pages.SA 		= MS2_NODE ;
-	BCM_MSG.Message20_ID = ID[19].identifier ;
+	ID[MSG20_INDEX].Pages.priority 		= PRIORITY_001 ;
+	ID[MSG20_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG20_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG20_INDEX].Pages.messageID 	= MESSAGE20 ;
+	ID[MSG20_INDEX].Pages.DA 			= BCM_NODE ;
+	ID[MSG20_INDEX].Pages.SA 			= MS2_NODE ;
+	BCM_MSG.Message20_ID = ID[MSG20_INDEX].identifier ;
 
-	ID[20].Pages.priority 	= PRIORITY_011 ;
-	ID[20].Pages.reserved 	= NOT_RESERVED ;
-	ID[20].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[20].Pages.messageID 	= MESSAGE21 ;
-	ID[20].Pages.DA 		= BCM_NODE;
-	ID[20].Pages.SA 		= SCB_NODE;
-	SCB_MSG.Message21_ID = ID[20].identifier ;
+	ID[MSG21_INDEX].Pages.priority 		= PRIORITY_011 ;
+	ID[MSG21_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG21_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG21_INDEX].Pages.messageID 	= MESSAGE21 ;
+	ID[MSG21_INDEX].Pages.DA 			= BCM_NODE;
+	ID[MSG21_INDEX].Pages.SA 			= SCB_NODE;
+	SCB_MSG.Message21_ID = ID[MSG21_INDEX].identifier ;
 
-	ID[21].Pages.priority 	= PRIORITY_111 ;
-	ID[21].Pages.reserved 	= NOT_RESERVED ;
-	ID[21].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[21].Pages.messageID 	= MESSAGE22 ;
-	ID[21].Pages.DA 		= BCM_NODE;
-	ID[21].Pages.SA 		= TLM_NODE;
-	TLM_MSG.Message22_ID = 	ID[21].identifier ;
+	ID[MSG22_INDEX].Pages.priority 		= PRIORITY_111 ;
+	ID[MSG22_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG22_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG22_INDEX].Pages.messageID 	= MESSAGE22 ;
+	ID[MSG22_INDEX].Pages.DA 			= BCM_NODE;
+	ID[MSG22_INDEX].Pages.SA 			= TLM_NODE;
+	TLM_MSG.Message22_ID = 	ID[MSG22_INDEX].identifier ;
 
-	ID[22].Pages.priority 	= PRIORITY_111 ;
-	ID[22].Pages.reserved 	= NOT_RESERVED ;
-	ID[22].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[22].Pages.messageID 	= MESSAGE23 ;
-	ID[22].Pages.DA 		= BCM_NODE;
-	ID[22].Pages.SA 		= TLM_NODE;
-	TLM_MSG.Message23_ID = 	ID[22].identifier ;
+	ID[MSG23_INDEX].Pages.priority 		= PRIORITY_111 ;
+	ID[MSG23_INDEX].Pages.reserved 		= NOT_RESERVED ;
+	ID[MSG23_INDEX].Pages.dataPoint 	= DATAPAGE_0 ;
+	ID[MSG23_INDEX].Pages.messageID 	= MESSAGE23 ;
+	ID[MSG23_INDEX].Pages.DA 			= BCM_NODE;
+	ID[MSG23_INDEX].Pages.SA 			= TLM_NODE;
+	TLM_MSG.Message23_ID = 	ID[MSG23_INDEX].identifier ;
 
 
 #if defined( BCM_MODULE )
@@ -989,11 +991,10 @@ EEM_ERR_T 	EEM_PERIODIC( EEM_CAN_Packet_st*  param )
 
 	break;
 
+	}
 
-
-
-	
 	return result;
+	
 }
 
 
@@ -1019,7 +1020,6 @@ EEM_BOOL_T	EEM_IS_EMPTY( const EEM_RING_Buffer_st* buffer )
 EEM_BOOL_T	EEM_IS_FULL( const EEM_RING_Buffer_st* buffer )
 {
 	  return buffer->full;
-
 }
 
 

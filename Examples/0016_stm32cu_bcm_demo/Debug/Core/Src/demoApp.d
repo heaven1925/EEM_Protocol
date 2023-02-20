@@ -30,11 +30,11 @@ Core/Src/demoApp.o: ../Core/Src/demoApp.c ../Core/Inc/demoApp.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
- C:/Users/ASUS/Desktop/STM/Workspace/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/EEMProtocol.h \
- C:/Users/ASUS/Desktop/STM/Workspace/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/MCP2515.h \
- C:/Users/ASUS/Desktop/STM/Workspace/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/CAN_SPI.h \
- C:/Users/ASUS/Desktop/STM/Workspace/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/EEMProtocol_Config.h \
- C:/Users/ASUS/Desktop/STM/Workspace/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/EEMProtocol.h
+ C:/Users/AtakanErtekin/Desktop/EEM_Protocol/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/EEMProtocol.h \
+ C:/Users/AtakanErtekin/Desktop/EEM_Protocol/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/MCP2515.h \
+ C:/Users/AtakanErtekin/Desktop/EEM_Protocol/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/CAN_SPI.h \
+ C:/Users/AtakanErtekin/Desktop/EEM_Protocol/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/EEMProtocol_Config.h \
+ C:/Users/AtakanErtekin/Desktop/EEM_Protocol/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/EEMProtocol.h
 ../Core/Inc/demoApp.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
@@ -68,8 +68,8 @@ Core/Src/demoApp.o: ../Core/Src/demoApp.c ../Core/Inc/demoApp.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
-C:/Users/ASUS/Desktop/STM/Workspace/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/EEMProtocol.h:
-C:/Users/ASUS/Desktop/STM/Workspace/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/MCP2515.h:
-C:/Users/ASUS/Desktop/STM/Workspace/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/CAN_SPI.h:
-C:/Users/ASUS/Desktop/STM/Workspace/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/EEMProtocol_Config.h:
-C:/Users/ASUS/Desktop/STM/Workspace/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/EEMProtocol.h:
+C:/Users/AtakanErtekin/Desktop/EEM_Protocol/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/EEMProtocol.h:
+C:/Users/AtakanErtekin/Desktop/EEM_Protocol/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/MCP2515.h:
+C:/Users/AtakanErtekin/Desktop/EEM_Protocol/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/CAN_SPI.h:
+C:/Users/AtakanErtekin/Desktop/EEM_Protocol/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/EEMProtocol_Config.h:
+C:/Users/AtakanErtekin/Desktop/EEM_Protocol/EEM_Protocol/Examples/0016_stm32cu_bcm_demo/Drivers/EEMProtocol/inc/EEMProtocol.h:

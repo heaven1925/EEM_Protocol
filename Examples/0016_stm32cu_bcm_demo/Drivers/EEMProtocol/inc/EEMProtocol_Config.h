@@ -203,6 +203,39 @@ typedef enum
 	PRIORITY_111 = 0b00000111 ,
 }EEMConfig_Priority_et;
 
+typedef enum
+{
+	MSG01_INDEX = 0 ,
+	MSG02_INDEX ,
+	MSG03_INDEX ,
+	MSG04_INDEX ,
+	MSG05_INDEX ,
+	MSG06_INDEX ,
+	MSG07_INDEX ,
+	MSG08_INDEX ,
+	MSG09_INDEX ,
+	MSG10_INDEX ,
+	MSG11_INDEX ,
+	MSG12_INDEX ,
+	MSG13_INDEX ,
+	MSG14_INDEX ,
+	MSG15_INDEX ,
+	MSG16_INDEX ,
+	MSG17_INDEX ,
+	MSG18_INDEX ,
+	MSG19_INDEX ,
+	MSG20_INDEX ,
+	MSG21_INDEX ,
+	MSG22_INDEX ,
+	MSG23_INDEX ,
+	MSG24_INDEX ,
+	MSG25_INDEX ,
+	MSG26_INDEX ,
+	MSG27_INDEX ,
+	//@...
+}EEMConfig_MsgID_Index_et;
+
+
 /*
 * All protocol payload has to define here!
 */

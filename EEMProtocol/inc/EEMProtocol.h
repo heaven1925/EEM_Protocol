@@ -11,8 +11,11 @@
 #ifndef __EEM_PROTOCOL_H__
 #define	__EEM_PROTOCOL_H__
 
+
 /*
- *
+ * SPI2CAN Protocol Permissions
+ * comment undef SPI2CAN_Protocol for use it.
+ * uncomment other procotols
 */
 #ifndef SPI2CAN_Protocol
 #define SPI2CAN_Protocol
@@ -20,7 +23,9 @@
 #endif
 
 /*
- *
+ * STM32Fx BxCAN Periph Protocol Permission
+ * comment undef BXCAN_Protocol for use it.
+ * uncomment other procotols
 */
 #ifndef BXCAN_Protocol
 #define BXCAN_Protocol
@@ -28,13 +33,14 @@
 #endif
 
 /*
- *
+ * STM32Hx FDCAN Periph Protocol Permission
+ * comment undef FDCAN_Protocol for use it.
+ * uncomment other procotols
 */
 #ifndef FDCAN_Protocol
 #define FDCAN_Protocol
 #undef  FDCAN_Protocol
 #endif
-
 
 #if defined(SPI2CAN_Protocol)
 /*
@@ -78,6 +84,8 @@ typedef unsigned short             EEM_U16      ; /**< 16bit unsigned integer ty
 typedef unsigned int               EEM_U32      ; /**< 32bit unsigned integer type */
 typedef unsigned long long		   EEM_U64		; /**< 64bit unsigned integer type */
 
+#define	EEM_VOID				   (void)
+
 /*
 * BOOL Type Definitions
 */
@@ -109,7 +117,6 @@ typedef enum
 */
 #define	EEM_MAX_SIZE				   	8
 
-
 /*
 * Can packet handler ring buffer maximum size
 */
@@ -133,7 +140,6 @@ typedef union{
 			/***********************************/
 		}Pages;
 }EEM_CAN_ID_st;
-
 
 /*
 * EEMProtocol Packet main data structure
@@ -174,7 +180,9 @@ CAN_HandleTypeDef hbxcanHandle;
 CAN_FilterTypeDef sFilterConfig;
 /* Classic CAN Variables */
 CAN_TxHeaderTypeDef   	txHeader;
+EEM_U32					txMailBox;
 CAN_RxHeaderTypeDef   	rxHeader;
+EEM_U32					rxMailBox;
 EEM_U8               	txData[ EEM_MAX_SIZE ];
 EEM_U8               	rxData[ EEM_MAX_SIZE ];
 /**************************/
@@ -266,8 +274,29 @@ typedef struct{
 	
 	EEM_Protocol_obj_st		obj;
 	EEM_Protocol_opr_st		ops;
-	
+
 }EEM_Protocol_st;
+
+
+/*
+ * DEBUG EEM_PROTOCOL
+ * comment undef EEM_DEBUG_EN for use it
+ */
+#ifndef EEM_DEBUG_EN
+#define	EEM_DEBUG_EN
+//#undef EEM_DEBUG_EN
+#define	DEBUG_MESSAGE_SIZE	50
+#endif
+
+#ifdef EEM_DEBUG_EN
+typedef struct{
+
+	UART_HandleTypeDef 	uartHandle	  ;
+	EEM_CAN_Packet_st	packetHandle  ;
+	char				message[DEBUG_MESSAGE_SIZE]	  ;
+}EEM_Debug_st;
+
+#endif
 
 /*----------------------------------------------------------------------------*/
 /* Functions used outside this module                                         */
@@ -302,7 +331,9 @@ EEM_BOOL_T		EEM_IS_EMPTY( const EEM_RING_Buffer_st* buffer );
 
 EEM_BOOL_T		EEM_IS_FULL	( const EEM_RING_Buffer_st* buffer );
 
+void 			EEM_TEST_MSG(void);
 
+void			EEM_DEBUG_PRINT(EEM_Debug_st* debugParam, char* msg);
 
 /*----------------------------------------------------------------------------*/
 /* Variables used only by this module                                         */

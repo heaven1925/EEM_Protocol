@@ -25,7 +25,7 @@
 */
 #ifndef 	BCM_MODULE
 #define		BCM_MODULE
-//#undef		BCM_MODULE
+#undef		BCM_MODULE
 #endif
 /* Node Addr = 0x11 */
 #define		BCM_NODE			0x11UL
@@ -143,6 +143,8 @@
 #define		SIZE_OF_MSG			25
 /********************************************************************************/
 
+void 	  EEM_SET_IDENTIFIERS(void);
+
 #if defined( BCM_MODULE )
 EEM_ERR_T EEM_FILTER_BCM( EEM_Protocol_obj_st* param );
 #elif defined( HVAC_MODULE )
@@ -203,6 +205,9 @@ typedef enum
 	PRIORITY_111 = 0b00000111 ,
 }EEMConfig_Priority_et;
 
+/*
+ * Message Index
+ */
 typedef enum
 {
 	MSG01_INDEX = 0 ,
@@ -234,6 +239,7 @@ typedef enum
 	MSG27_INDEX ,
 	//@...
 }EEMConfig_MsgID_Index_et;
+
 
 
 /*
@@ -348,9 +354,7 @@ typedef struct
 		}SPN;
 	}Message04;
 
-
 	EEM_U32 Message05_ID;
-
 	union{
 
 			EEM_U8 payload[8];
@@ -361,74 +365,6 @@ typedef struct
 				EEM_U16 BCM_rightAcc_u16  	: 16  ; /* Sağ motorun ivme bilgisini tutar.					 */
 			}SPN;
 		}Message05;
-
-
-	EEM_U32 Message06_ID;
-
-	union{
-
-		EEM_U8 payload[8];
-		struct{
-			EEM_U16 VOLTAGE_C1  	: 16  ; /* Sol motorun gyro bilgisini  tutar.					 */
-			EEM_U16 VOLTAGE_C2  	: 16  ; /* Sol motorun ivme bilgisini tutar.					 */
-			EEM_U16 VOLTAGE_C3      : 16  ; /* Sağ motorun gyro bilgisini  tutar. 					 */
-			EEM_U16 VOLTAGE_C4  	: 16  ; /* Sağ motorun ivme bilgisini tutar.					 */
-		}SPN;
-	}Message06;
-
-	EEM_U32 Message07_ID;
-
-	union{
-			EEM_U8 payload[8];
-		struct{
-				EEM_U16 VOLTAGE_C5  	: 16  ; /* Sol motorun gyro bilgisini  tutar.					 */
-				EEM_U16 VOLTAGE_C6  	: 16  ; /* Sol motorun ivme bilgisini tutar.					 */
-				EEM_U16 VOLTAGE_C7      : 16  ; /* Sağ motorun gyro bilgisini  tutar. 					 */
-				EEM_U16 VOLTAGE_C8  	: 16  ; /* Sağ motorun ivme bilgisini tutar.					 */
-			}SPN;
-		}Message07;
-
-
-		EEM_U32 Message08_ID;
-
-		union{
-		   EEM_U8 payload[8];
-		   struct{
-					EEM_U16 VOLTAGE_C9  	: 16  ; /* Sol motorun gyro bilgisini  tutar.					 */
-					EEM_U16 VOLTAGE_C10  	: 16  ; /* Sol motorun ivme bilgisini tutar.					 */
-					EEM_U16 VOLTAGE_C11     : 16  ; /* Sağ motorun gyro bilgisini  tutar. 					 */
-					EEM_U16 VOLTAGE_C12 	: 16  ; /* Sağ motorun ivme bilgisini tutar.					 */
-				}SPN;
-			}Message08;
-
-
-			EEM_U32 Message09_ID;
-
-			union{
-					EEM_U8 payload[8];
-					struct{
-						EEM_U16 VOLTAGE_C13  	: 16  ; /* Sol motorun gyro bilgisini  tutar.					 */
-						EEM_U16 VOLTAGE_C14  	: 16  ; /* Sol motorun ivme bilgisini tutar.					 */
-						EEM_U16 VOLTAGE_C15      : 16  ; /* Sağ motorun gyro bilgisini  tutar. 					 */
-						EEM_U16 VOLTAGE_C16  	: 16  ; /* Sağ motorun ivme bilgisini tutar.					 */
-					}SPN;
-				}Message09;
-
-
-				EEM_U32 Message10_ID;
-
-				union{
-						EEM_U8 payload[8];
-						struct{
-							EEM_U16 VOLTAGE_C17  	: 16  ; /* Sol motorun gyro bilgisini  tutar.					 */
-							EEM_U16 VOLTAGE_C18  	: 16  ; /* Sol motorun ivme bilgisini tutar.					 */
-							EEM_U16 CURRENT         : 16  ; /* Sağ motorun gyro bilgisini  tutar. 					 */
-							EEM_U16 TEMP  	        : 16  ; /* Sağ motorun ivme bilgisini tutar.					 */
-						}SPN;
-					}Message10;
-
-
-
 
 	EEM_U32 Message11_ID;
 	union{
@@ -446,13 +382,11 @@ typedef struct
 		}SPN;
 	}Message12;
 
-
-
 	EEM_U32 Message19_ID;
 	union{
 		EEM_U8 payload[8];
 		struct{
-			EEM_U8 BCM_MS1_Mode	:8;
+			EEM_U8  BCM_MS1_Mode	:8;
 			EEM_U64 dummy :56;
 		}SPN;
 	}Message19;
@@ -472,8 +406,6 @@ typedef struct
 /*
  * Simple Computer Message Class
  */
-
-
 typedef struct
 {
 	EEM_U32	Message21_ID;
@@ -541,10 +473,10 @@ typedef struct
 	union{
 		EEM_U8 payload[8];
 		struct{
-			EEM_U16 BMS_cell11Voltage_u16  	: 16  ; /* Batarya Grubu 11. Hücre Gerilimini tutar.	*/
-			EEM_U16 BMS_cell12Voltage_u16  	: 16  ; /* Batarya Grubu 12. Hücre Gerilimini tutar. 	*/
-			EEM_U16 BMS_cell13Voltage_u16   : 16  ; /* Batarya Grubu 13. Hücre Gerilimini tutar. 	*/
-			EEM_U16 BMS_cell14Voltage_u16  	: 16  ; /* Batarya Grubu 14. Hücre Gerilimini tutar. 	*/
+			EEM_U16 BMS_cell13Voltage_u16  	: 16  ; /* Batarya Grubu 11. Hücre Gerilimini tutar.	*/
+			EEM_U16 BMS_cell14Voltage_u16  	: 16  ; /* Batarya Grubu 12. Hücre Gerilimini tutar. 	*/
+			EEM_U16 BMS_cell15Voltage_u16   : 16  ; /* Batarya Grubu 13. Hücre Gerilimini tutar. 	*/
+			EEM_U16 BMS_cell16Voltage_u16  	: 16  ; /* Batarya Grubu 14. Hücre Gerilimini tutar. 	*/
 		}SPN;
 	}Message09;
 
@@ -552,8 +484,8 @@ typedef struct
 	union{
 		EEM_U8 payload[8];
 		struct{
-			EEM_U16 BMS_cell15Voltage_u16  	: 16  ; /* Batarya Grubu 15. Hücre Gerilimini tutar.	 */
-			EEM_U16 BMS_cell16Voltage_u16  	: 16  ; /* Batarya Grubu 16. Hücre Gerilimini tutar. 	 */
+			EEM_U16 BMS_cell17Voltage_u16  	: 16  ; /* Batarya Grubu 15. Hücre Gerilimini tutar.	 */
+			EEM_U16 BMS_cell18Voltage_u16  	: 16  ; /* Batarya Grubu 16. Hücre Gerilimini tutar. 	 */
 			EEM_U16 BMS_lineCurrent_u16   	: 16  ; /* Batarya Grubu hat akımını tutar. 			 */
 			EEM_U16 BMS_temperatureVal_u16 	: 16  ; /* Batarya Grubu sıcaklık değerini tutar.		 */
 		}SPN;

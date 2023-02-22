@@ -11,7 +11,7 @@
 #include "EEMProtocol.h"
 #include "EEMProtocol_Config.h"
 
-const	EEM_Protocol_opr_st		ops = 
+const	EEM_Protocol_ops_st		ops =
 {
 	EEM_INIT		,
 	EEM_TX			,
@@ -28,6 +28,182 @@ ISO_Module_st	ISO_MSG;
 TLM_Module_st	TLM_MSG;
 YSB_Module_st	YSB_MSG;
 
+EEM_Debug_st debug;
+
+#if 1 /* IRQ Handlers */
+
+#if (defined(STM32F446xx) || defined(STM32F407xx) && defined(BXCAN_Protocol))
+
+void CAN1_RX0_IRQHandler(void)
+{
+
+  HAL_CAN_IRQHandler(&protocol.obj.bxHandle.hbxcanHandle);
+
+  if( HAL_CAN_GetRxMessage( &protocol.obj.bxHandle.hbxcanHandle ,
+		  	  	  	        CAN_RX_FIFO0						,
+							&protocol.obj.bxHandle.rxHeader 	,
+							&protocol.obj.bxHandle.rxData[0] 	) != HAL_OK )
+  {
+	  Error_Handler();
+  }
+
+  protocol.ops.EEM_RX( &protocol.obj.canPacket  			,
+      				   protocol.obj.bxHandle.rxHeader		,
+  					   &protocol.obj.bxHandle.rxData[0]	    );
+
+  if( HAL_CAN_ActivateNotification(&protocol.obj.bxHandle.hbxcanHandle, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK )
+  {
+	  Error_Handler();
+  }
+
+}
+
+
+#elif (defined(STM32H750xx) && defined(FDCAN_Protocol))
+
+void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
+{
+  if((RxFifo0ITs & FDCAN_IT_RX_FIFO0_NEW_MESSAGE) != RESET)
+  {
+    /* Retreive Rx messages from RX FIFO0 */
+    if (HAL_FDCAN_GetRxMessage(	&protocol.obj.fdHandle.hfdcanHandle ,
+    							FDCAN_RX_FIFO0						,
+								&protocol.obj.fdHandle.rxHeader 	,
+								&protocol.obj.fdHandle.rxData[0] ) != HAL_OK)
+    {
+    /* Reception Error */
+    Error_Handler();
+    }
+
+    protocol.ops.EEM_RX(&protocol.obj.canPacket  			,
+    					 protocol.obj.fdHandle.rxHeader		,
+						 &protocol.obj.fdHandle.rxData[0]	);
+
+    if (HAL_FDCAN_ActivateNotification(hfdcan, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK)
+    {
+      /* Notification Error */
+      Error_Handler();
+    }
+  }
+}
+
+
+void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t BufferIndexes)
+{
+	return;
+}
+
+#endif
+
+#endif
+
+#if (defined(STM32F446xx) || defined(STM32F407xx) && defined(BXCAN_Protocol))
+/*******************************************************************************
+	 @func    :	EEM_BXCAN_PeriphBase_CTOR
+	 @param   : EEM_bxCAN_PeriphBase_st* param
+	 @param   : CAN_HandleTypeDef _can
+	 @return  : void
+	 @date	  : 22.02.2023
+	 @INFO	  :	Constructur function for BxCAN Periph Class
+********************************************************************************/
+void EEM_BXCAN_PeriphBase_CTOR(EEM_bxCAN_PeriphBase_st* param , CAN_HandleTypeDef* _can)
+{
+	param->hbxcanHandle = *_can;
+
+	memset(&param->sFilterConfig , 0x00 , sizeof(CAN_FilterTypeDef) );
+
+	memset(&param->txHeader , 0x00 , sizeof(CAN_TxHeaderTypeDef) );
+	param->txMailBox = 0 ;
+
+	memset(&param->rxHeader , 0x00 , sizeof(CAN_RxHeaderTypeDef) );
+	param->rxMailBox = 0 ;
+
+	memset(&param->txData[0] , 0x00 , sizeof(param->txData) );
+	memset(&param->rxData[0] , 0x00 , sizeof(param->rxData) );
+}
+#elif (defined(STM32H750xx) && defined(FDCAN_Protocol))
+/*******************************************************************************
+	 @func    :
+	 @param   :
+	 @return  :
+	 @date	  :
+	 @INFO	  :
+********************************************************************************/
+void EEM_FDCAN_PeriphBase_CTOR(EEM_FDCAN_PeriphBase_st* param , FDCAN_HandleTypeDef* _fdcan )
+{
+	param->hfdcanHandle = *_fdcan;
+
+	memset(&param->sFilterConfig , 0x00 , sizeof(FDCAN_FilterTypeDef) );
+
+	memset(&param->txHeader , 0x00 , sizeof(FDCAN_TxHeaderTypeDef) );
+	memset(&param->txHeader , 0x00 , sizeof(FDCAN_RxHeaderTypeDef) );
+
+	memset(&param->txData[0] , 0x00 , sizeof(param->txData) );
+	memset(&param->rxData[0] , 0x00 , sizeof(param->rxData) );
+}
+#else
+#if defined(SPI2CAN_Protocol)
+/*******************************************************************************
+	 @func    :
+	 @param   :
+	 @return  :
+	 @date	  :
+	 @INFO	  :
+********************************************************************************/
+void EEM_SPI2CAN_PeriphBase_CTOR(EEM_SPI2CAN_PeriphBase_st* param )
+{
+	memset( &param->txMessage , 0x00 , sizeof(uCAN_MSG) );
+	memset( &param->rxMessage , 0x00 , sizeof(uCAN_MSG) );
+}
+#else
+	/* Error Constuctor */
+#endif
+#endif
+
+
+/*******************************************************************************
+	 @func    :
+	 @param   :
+	 @return  :
+	 @date	  :
+	 @INFO	  :
+********************************************************************************/
+void EEM_CTOR(EEM_Protocol_st* param, EEM_Protocol_ops_st _ops
+#if (defined(STM32F446xx) || defined(STM32F407xx) && defined(BXCAN_Protocol))
+	, CAN_HandleTypeDef* _can
+#elif (defined(STM32H750xx) && defined(FDCAN_Protocol))
+	, FDCAN_HandleTypeDef* _fdcan
+#else
+/* Only works for spi2can */
+#endif
+)
+{
+	/* Construct methods */
+	param->ops = _ops ;
+
+#if (defined(STM32F446xx) || defined(STM32F407xx) && defined(BXCAN_Protocol))
+
+	EEM_BXCAN_PeriphBase_CTOR(&param->obj.bxHandle , _can);
+
+#elif (defined(STM32H750xx) && defined(FDCAN_Protocol))
+
+	EEM_FDCAN_PeriphBase_CTOR(&param->obj.fdHandle , _fdcan);
+
+#else
+#if defined(SPI2CAN_Protocol)
+
+	EEM_SPI2CAN_PeriphBase_CTOR(&param->obj.spi2canHandle);
+
+#else
+//ERROR
+#endif
+#endif
+
+	/* Construct other objects */
+	memset(&param->obj.canPacket , 0x00 , sizeof(EEM_CAN_Packet_st));
+	memset(&param->obj.ringBuffer , 0x00 , sizeof(EEM_RING_Buffer_st));
+
+}
 
 /*******************************************************************************
 	 @func    :	
@@ -41,6 +217,27 @@ EEM_ERR_T EEM_INIT( EEM_Protocol_obj_st*  param )
 	
 	EEM_ERR_T result = EEM_EOK;
 
+#ifdef EEM_DEBUG_EN
+
+	debug.uartHandle.Instance 			= USART2;
+	debug.uartHandle.Init.BaudRate 		= 115200;
+	debug.uartHandle.Init.WordLength 	= UART_WORDLENGTH_8B;
+	debug.uartHandle.Init.StopBits 		= UART_STOPBITS_1;
+	debug.uartHandle.Init.Parity 		= UART_PARITY_NONE;
+	debug.uartHandle.Init.Mode 			= UART_MODE_TX_RX;
+	debug.uartHandle.Init.HwFlowCtl 	= UART_HWCONTROL_NONE;
+	debug.uartHandle.Init.OverSampling 	= UART_OVERSAMPLING_16;
+
+	if(HAL_UART_Init(&debug.uartHandle) != HAL_OK)
+	{
+	  return EEM_ERROR;
+	}
+
+#ifdef EEM_DEBUG_EN
+	EEM_DEBUG_PRINT(&debug , "EEM PROTOCOL CAN STACK \n");
+#endif
+
+#endif
 /* Ring Buffer Init Sequance */
 
 	param->ringBuffer.head = 0;
@@ -49,9 +246,32 @@ EEM_ERR_T EEM_INIT( EEM_Protocol_obj_st*  param )
 
 #if (defined(STM32F446xx) || defined(STM32F407xx) && defined(BXCAN_Protocol))
 	
+	param->bxHandle.hbxcanHandle.Instance					= CAN1;
+	param->bxHandle.hbxcanHandle.Init.Prescaler 			= 12;
+	param->bxHandle.hbxcanHandle.Init.Mode 					= CAN_MODE_LOOPBACK;
+	param->bxHandle.hbxcanHandle.Init.SyncJumpWidth 		= CAN_SJW_1TQ;
+	param->bxHandle.hbxcanHandle.Init.TimeSeg1 				= CAN_BS1_11TQ;
+	param->bxHandle.hbxcanHandle.Init.TimeSeg2 				= CAN_BS2_2TQ;
+	param->bxHandle.hbxcanHandle.Init.TimeTriggeredMode 	= DISABLE;
+	param->bxHandle.hbxcanHandle.Init.AutoBusOff 			= DISABLE;
+	param->bxHandle.hbxcanHandle.Init.AutoWakeUp 			= DISABLE;
+	param->bxHandle.hbxcanHandle.Init.AutoRetransmission 	= ENABLE;
+	param->bxHandle.hbxcanHandle.Init.ReceiveFifoLocked	 	= DISABLE;
+	param->bxHandle.hbxcanHandle.Init.TransmitFifoPriority 	= DISABLE;
 	
+	if (HAL_CAN_Init(&param->bxHandle.hbxcanHandle) != HAL_OK)
+	{
+		return EEM_ERROR;
+	}
 	
-	
+#ifdef EEM_DEBUG_EN
+	EEM_DEBUG_PRINT(&debug , "BXCAN PERIPH CONFIG DONE ! \n");
+#endif
+
+#ifdef EEM_DEBUG_EN
+
+#endif
+
 #elif (defined(STM32H750xx) && defined(FDCAN_Protocol))
 	/*@NOTICE: All Configs for 42MHz CAN BASE CLOCK */
 
@@ -105,6 +325,11 @@ EEM_ERR_T EEM_INIT( EEM_Protocol_obj_st*  param )
 	{
 		return EEM_ERROR;
 	}
+
+#ifdef EEM_DEBUG_EN
+	EEM_DEBUG_PRINT(&debug , "FDCAN PERIPH CONFIG DONE ! \n");
+#endif
+
 #else
 
 #if defined(SPI2CAN_Protocol)
@@ -117,199 +342,19 @@ EEM_ERR_T EEM_INIT( EEM_Protocol_obj_st*  param )
 		return EEM_ERROR;
 	}
 
+#ifdef EEM_DEBUG_EN
+	EEM_DEBUG_PRINT(&debug , "SPI2CAN PERIPH CONFIG DONE ! \n");
+#endif
+
 #else
 
 #endif
 
 #endif
 
-	/* Message Identifier Handler */
-	EEM_CAN_ID_st ID[SIZE_OF_MSG] = {0};
+	/* Filtering Configurations */
 
-	ID[0].Pages.priority 	= PRIORITY_010 ;
-	ID[0].Pages.reserved 	= NOT_RESERVED ;
-	ID[0].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[0].Pages.messageID 	= MESSAGE01 ;
-	ID[0].Pages.DA 			= BCM_NODE;
-	ID[0].Pages.SA 			= HVAC_NODE ;
-	HVAC_MSG.Message01_ID = ID[0].identifier ;
-
-	ID[1].Pages.priority 	= PRIORITY_010 ;
-	ID[1].Pages.reserved 	= NOT_RESERVED ;
-	ID[1].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[1].Pages.messageID 	= MESSAGE02 ;
-	ID[1].Pages.DA 			= BCM_NODE;
-	ID[1].Pages.SA 			= HVAC_NODE ;
-	HVAC_MSG.Message02_ID = ID[1].identifier ;
-
-	ID[2].Pages.priority 	= PRIORITY_100 ;
-	ID[2].Pages.reserved 	= NOT_RESERVED ;
-	ID[2].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[2].Pages.messageID 	= MESSAGE03 ;
-	ID[2].Pages.DA 			= TLM_NODE;
-	ID[2].Pages.SA 			= BCM_NODE;
-	BCM_MSG.Message03_ID = ID[2].identifier ;
-
-	ID[3].Pages.priority 	= PRIORITY_100 ;
-	ID[3].Pages.reserved 	= NOT_RESERVED ;
-	ID[3].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[3].Pages.messageID 	= MESSAGE04 ;
-	ID[3].Pages.DA 			= SCB_NODE;
-	ID[3].Pages.SA 			= BCM_NODE;
-	BCM_MSG.Message04_ID = ID[3].identifier ;
-
-	ID[4].Pages.priority 	= PRIORITY_100 ;
-	ID[4].Pages.reserved 	= NOT_RESERVED ;
-	ID[4].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[4].Pages.messageID 	= MESSAGE05 ;
-	ID[4].Pages.DA 			= SCB_NODE;
-	ID[4].Pages.SA 			= BCM_NODE;
-	BCM_MSG.Message05_ID = ID[4].identifier ;
-
-	ID[5].Pages.priority 	= PRIORITY_100 ;
-	ID[5].Pages.reserved 	= NOT_RESERVED ;
-	ID[5].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[5].Pages.messageID 	= MESSAGE06 ;
-	ID[5].Pages.DA 			= SCB_NODE;
-	ID[5].Pages.SA 			= BMS_NODE;
-	BMS_MSG.Message06_ID = ID[5].identifier ;
-
-	ID[6].Pages.priority 	= PRIORITY_100 ;
-	ID[6].Pages.reserved 	= NOT_RESERVED ;
-	ID[6].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[6].Pages.messageID 	= MESSAGE07 ;
-	ID[6].Pages.DA 			= SCB_NODE;
-	ID[6].Pages.SA 			= BMS_NODE;
-	BMS_MSG.Message07_ID = ID[6].identifier ;
-
-	ID[7].Pages.priority 	= PRIORITY_100 ;
-	ID[7].Pages.reserved 	= NOT_RESERVED ;
-	ID[7].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[7].Pages.messageID 	= MESSAGE08 ;
-	ID[7].Pages.DA 			= SCB_NODE;
-	ID[7].Pages.SA 			= BMS_NODE;
-	BMS_MSG.Message08_ID = ID[7].identifier ;
-
-	ID[8].Pages.priority 	= PRIORITY_100 ;
-	ID[8].Pages.reserved 	= NOT_RESERVED ;
-	ID[8].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[8].Pages.messageID 	= MESSAGE09 ;
-	ID[8].Pages.DA 			= SCB_NODE;
-	ID[8].Pages.SA 			= BMS_NODE;
-	BMS_MSG.Message09_ID = ID[8].identifier ;
-
-	ID[9].Pages.priority 	= PRIORITY_100 ;
-	ID[9].Pages.reserved 	= NOT_RESERVED ;
-	ID[9].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[9].Pages.messageID 	= MESSAGE10 ;
-	ID[9].Pages.DA 			= SCB_NODE;
-	ID[9].Pages.SA 			= BMS_NODE;
-	BMS_MSG.Message10_ID = ID[9].identifier ;
-
-	ID[10].Pages.priority 	= PRIORITY_001 ;
-	ID[10].Pages.reserved 	= NOT_RESERVED ;
-	ID[10].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[10].Pages.messageID 	= MESSAGE11 ;
-	ID[10].Pages.DA 		= MS1_NODE;
-	ID[10].Pages.SA 		= BCM_NODE ;
-	BCM_MSG.Message11_ID = ID[10].identifier ;
-
-	ID[11].Pages.priority 	= PRIORITY_001 ;
-	ID[11].Pages.reserved 	= NOT_RESERVED ;
-	ID[11].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[11].Pages.messageID 	= MESSAGE12 ;
-	ID[11].Pages.DA 		= MS2_NODE;
-	ID[11].Pages.SA 		= BCM_NODE ;
-	BCM_MSG.Message12_ID = ID[11].identifier ;
-
-	ID[12].Pages.priority 	= PRIORITY_001 ;
-	ID[12].Pages.reserved 	= NOT_RESERVED ;
-	ID[12].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[12].Pages.messageID 	= MESSAGE13 ;
-	ID[12].Pages.DA 		= BCM_NODE ;
-	ID[12].Pages.SA 		= MS1_NODE ;
-	MS1_MSG.Message13_ID = ID[12].identifier ;
-
-	ID[13].Pages.priority 	= PRIORITY_001 ;
-	ID[13].Pages.reserved 	= NOT_RESERVED ;
-	ID[13].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[13].Pages.messageID 	= MESSAGE14 ;
-	ID[13].Pages.DA 		= BCM_NODE ;
-	ID[13].Pages.SA 		= MS1_NODE ;
-	MS1_MSG.Message14_ID = ID[13].identifier ;
-
-	ID[14].Pages.priority 	= PRIORITY_001 ;
-	ID[14].Pages.reserved 	= NOT_RESERVED ;
-	ID[14].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[14].Pages.messageID 	= MESSAGE15 ;
-	ID[14].Pages.DA 		= BCM_NODE ;
-	ID[14].Pages.SA 		= MS1_NODE ;
-	MS1_MSG.Message15_ID = ID[14].identifier ;
-
-    ID[15].Pages.priority 	= PRIORITY_001 ;
-    ID[15].Pages.reserved 	= NOT_RESERVED ;
-    ID[15].Pages.dataPoint 	= DATAPAGE_0 ;
-    ID[15].Pages.messageID 	= MESSAGE16 ;
-    ID[15].Pages.DA 		= BCM_NODE ;
-    ID[15].Pages.SA 		= MS2_NODE ;
-    MS2_MSG.Message16_ID = ID[15].identifier ;
-
-	ID[16].Pages.priority 	= PRIORITY_001 ;
-	ID[16].Pages.reserved 	= NOT_RESERVED ;
-	ID[16].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[16].Pages.messageID 	= MESSAGE17 ;
-	ID[16].Pages.DA 		= BCM_NODE ;
-	ID[16].Pages.SA 		= MS2_NODE ;
-	MS2_MSG.Message17_ID = ID[16].identifier ;
-
-	ID[17].Pages.priority 	= PRIORITY_001 ;
-	ID[17].Pages.reserved 	= NOT_RESERVED ;
-	ID[17].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[17].Pages.messageID 	= MESSAGE18 ;
-	ID[17].Pages.DA 		= BCM_NODE ;
-	ID[17].Pages.SA 		= MS2_NODE ;
-	MS2_MSG.Message18_ID = ID[17].identifier ;
-
-	ID[18].Pages.priority 	= PRIORITY_001 ;
-	ID[18].Pages.reserved 	= NOT_RESERVED ;
-	ID[18].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[18].Pages.messageID 	= MESSAGE19 ;
-	ID[18].Pages.DA 		= BCM_NODE ;
-	ID[18].Pages.SA 		= MS1_NODE ;
-	BCM_MSG.Message19_ID = ID[18].identifier ;
-
-	ID[19].Pages.priority 	= PRIORITY_001 ;
-	ID[19].Pages.reserved 	= NOT_RESERVED ;
-	ID[19].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[19].Pages.messageID 	= MESSAGE20 ;
-	ID[19].Pages.DA 		= BCM_NODE ;
-	ID[19].Pages.SA 		= MS2_NODE ;
-	BCM_MSG.Message20_ID = ID[19].identifier ;
-
-	ID[20].Pages.priority 	= PRIORITY_011 ;
-	ID[20].Pages.reserved 	= NOT_RESERVED ;
-	ID[20].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[20].Pages.messageID 	= MESSAGE21 ;
-	ID[20].Pages.DA 		= BCM_NODE;
-	ID[20].Pages.SA 		= SCB_NODE;
-	SCB_MSG.Message21_ID = ID[20].identifier ;
-
-	ID[21].Pages.priority 	= PRIORITY_111 ;
-	ID[21].Pages.reserved 	= NOT_RESERVED ;
-	ID[21].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[21].Pages.messageID 	= MESSAGE22 ;
-	ID[21].Pages.DA 		= BCM_NODE;
-	ID[21].Pages.SA 		= TLM_NODE;
-	TLM_MSG.Message22_ID = 	ID[21].identifier ;
-
-	ID[22].Pages.priority 	= PRIORITY_111 ;
-	ID[22].Pages.reserved 	= NOT_RESERVED ;
-	ID[22].Pages.dataPoint 	= DATAPAGE_0 ;
-	ID[22].Pages.messageID 	= MESSAGE23 ;
-	ID[22].Pages.DA 		= BCM_NODE;
-	ID[22].Pages.SA 		= TLM_NODE;
-	TLM_MSG.Message23_ID = 	ID[22].identifier ;
-
+	EEM_SET_IDENTIFIERS();
 
 #if defined( BCM_MODULE )
 	if( EEM_FILTER_BCM( param ) != EEM_EOK ) return EEM_ERROR;
@@ -331,19 +376,45 @@ EEM_ERR_T EEM_INIT( EEM_Protocol_obj_st*  param )
 	/* No Filter */
 #endif
 
+#ifdef EEM_DEBUG_EN
+	EEM_DEBUG_PRINT(&debug , "EEM PROTOCOL FILTERING DONE ! \n");
+#endif
 
 #if (defined(STM32F446xx) || defined(STM32F407xx) && defined(BXCAN_Protocol))
 
+	if( HAL_CAN_Start(&param->bxHandle.hbxcanHandle) != HAL_OK )
+	{
+		return EEM_ERROR;
+	}
+	if( HAL_CAN_ActivateNotification(&param->bxHandle.hbxcanHandle, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK )
+	{
+		return EEM_ERROR;
+	}
 
-
-
+	/* TEST MESSAGE FOR BX CAN LINE */
+	/*******************************************************************************/
+	CAN_TxHeaderTypeDef   	TestTxHeader;
+	EEM_U32					TestTxMailBox;
+	EEM_U8               	TestTxData[8] = { 0xEE , EEM_VERSION , 0xEE , EEM_SUBVERSION , 0xEE , EEM_REVISION , 0xEE , 0xEE};
+	TestTxHeader.DLC		= EEM_MAX_SIZE 	;
+	TestTxHeader.IDE		= CAN_ID_EXT   	;
+	TestTxHeader.RTR		= CAN_RTR_DATA	;
+	TestTxHeader.ExtId		= 0x0EE00EE0;
+	if( HAL_CAN_AddTxMessage(&param->bxHandle.hbxcanHandle  ,
+		        			 &TestTxHeader				,
+							 &TestTxData 	     		,
+							 &TestTxMailBox 	 			) != HAL_OK )
+	{
+		return EEM_ERROR;
+	}
+	/*******************************************************************************/
 
 #elif (defined(STM32H750xx) && defined(FDCAN_Protocol))
 
 	/* Configure global filter to reject all non-matching frames */
 	 HAL_FDCAN_ConfigGlobalFilter(&param->fdHandle.hfdcanHandle, FDCAN_REJECT, FDCAN_REJECT, FDCAN_REJECT_REMOTE, FDCAN_REJECT_REMOTE);
 
-	if(HAL_FDCAN_Start(&param->fdHandle.hfdcanHandle)!= HAL_OK)
+	if(HAL_FDCAN_Start(&param->fdHandle.hfdcanHandle) != HAL_OK)
 	{
 		return EEM_ERROR;
 	}
@@ -354,7 +425,7 @@ EEM_ERR_T EEM_INIT( EEM_Protocol_obj_st*  param )
 		return EEM_ERROR;
 	}
 
-	/* TEST MESSAGE FOR CAN LINE */
+	/* TEST MESSAGE FOR FD CAN LINE */
 	/*******************************************************************************/
 	FDCAN_TxHeaderTypeDef   TestTxHeader;
 	EEM_U8               	TestTxData[8] = { 0xEE , EEM_VERSION , 0xEE , EEM_SUBVERSION , 0xEE , EEM_REVISION , 0xEE , 0xEE};
@@ -377,7 +448,7 @@ EEM_ERR_T EEM_INIT( EEM_Protocol_obj_st*  param )
 #if defined(SPI2CAN_Protocol)
 
 #else
-
+#error /* failed define */
 #endif
 
 #endif
@@ -454,6 +525,21 @@ EEM_ERR_T 		EEM_TX( EEM_CAN_Packet_st* param, EEM_U32 period )
 
 #if (defined(STM32F446xx) || defined(STM32F407xx) && defined(BXCAN_Protocol))
 
+	memcpy(&protocol.obj.bxHandle.txData , &param->DATA[0] , EEM_MAX_SIZE );
+
+	protocol.obj.bxHandle.txHeader.DLC   = EEM_MAX_SIZE ; /* 8 BYTE */
+	protocol.obj.bxHandle.txHeader.IDE   = CAN_ID_EXT   ;
+	protocol.obj.bxHandle.txHeader.RTR   = CAN_RTR_DATA ;
+	protocol.obj.bxHandle.txHeader.ExtId = param->EXTENDED_ID.identifier ;
+
+	if( HAL_CAN_AddTxMessage(&protocol.obj.bxHandle.hbxcanHandle ,
+	        				 &protocol.obj.bxHandle.txHeader	 ,
+	        				 &protocol.obj.bxHandle.txData 	     ,
+	        				 &protocol.obj.bxHandle.txMailBox 	 ) != HAL_OK )
+	{
+		return EEM_ERROR;
+	}
+
 
 #elif (defined(STM32H750xx) && defined(FDCAN_Protocol))
 
@@ -493,10 +579,6 @@ EEM_ERR_T 		EEM_TX( EEM_CAN_Packet_st* param, EEM_U32 period )
 #endif
 
 #endif
-	
-	
-
-
 
 	return result;
 }
@@ -523,11 +605,12 @@ EEM_ERR_T 		EEM_RX( EEM_CAN_Packet_st* 	param 	  ,
 {
 	EEM_ERR_T result = EEM_EOK;
 
-#if defined(STM32F446xx)
+#if ( defined(STM32F446xx) || defined(STM32F407xx) ) && defined(BXCAN_Protocol)
 
+	memcpy( &param->DATA[0] , &rxData[0] , EEM_MAX_SIZE );
+	param->EXTENDED_ID.identifier = rxHeader.ExtId;
 
-
-#elif defined(STM32H750xx)
+#elif defined(STM32H750xx) && defined(FDCAN_Protocol)
 
 	memcpy( &param->DATA[0] , &rxData[0] , EEM_MAX_SIZE );
 	param->EXTENDED_ID.identifier = rxHeader.Identifier;
@@ -536,14 +619,14 @@ EEM_ERR_T 		EEM_RX( EEM_CAN_Packet_st* 	param 	  ,
 
 #if defined(SPI2CAN_Protocol)
 
-	//@That library used polling method
+	/* That library used polling method */
 	if( CANSPI_Receive(rxPacked) )
 	{
 		memcpy(&param->DATA[0] , &rxPacked->frame.data0 , EEM_MAX_SIZE  );
 		param->EXTENDED_ID.identifier = rxPacked->frame.id ;
 	}
 	else
-	{
+	{	/* If MCP2515 FIFO doesnt have any ext can pack it returns err */
 		return EEM_ERROR;
 	}
 
@@ -573,30 +656,36 @@ EEM_ERR_T 	EEM_PERIODIC( EEM_CAN_Packet_st*  param )
 
 #if (defined(STM32F446xx) || defined(STM32F407xx) && defined(BXCAN_Protocol)) || (defined(STM32H750xx) && defined(FDCAN_Protocol))
 	//bxCAN ve FDCAN IRQ Handler'da recv yapmaktadir.
-#else
+#elif defined(SPI2CAN_Protocol)
 
 	uCAN_MSG rxHandle = {0};
 
 	result = EEM_RX(param, &rxHandle, NULL);
 	if( result != EEM_EOK ) return result;
-
+#else
+	/* Select Protocol  */
 #endif
 
 	while( !EEM_IS_EMPTY(&protocol.obj.ringBuffer) )
 	{
 	   EEM_POP(&protocol.obj.ringBuffer, param);
 
-#ifdef DEBUG_EN
-	    printf("ID : %X" , param->EXTENDED_ID );
-		printf("%02 %02 %02 %02 %02 %02 %02 %02 \n" , param->DATA[0] ,
-					                                  param->DATA[1] ,
-		                                              param->DATA[2] ,
-		                                              param->DATA[3] ,
-		                                              param->DATA[4] ,
-		                                              param->DATA[5] ,
-		                                              param->DATA[6] ,
-		                                              param->DATA[7] ,
-		                                              param->DATA[0] );
+#ifdef EEM_DEBUG_EN
+
+	char debugText[DEBUG_MESSAGE_SIZE] = { 0x00 };
+
+	sprintf(&debugText[0], "ID : %08X" , param->EXTENDED_ID.identifier );
+	EEM_DEBUG_PRINT(&debug , &debugText[0]);
+
+	sprintf(&debugText[0], "%02X %02X %02X %02X %02X %02X %02X %02X \n" , param->DATA[0] ,
+				                                                          param->DATA[1] ,
+	                                                                      param->DATA[2] ,
+	                                                                      param->DATA[3] ,
+	                                                                      param->DATA[4] ,
+	                                                                      param->DATA[5] ,
+	                                                                      param->DATA[6] ,
+	                                                                      param->DATA[7] );
+	EEM_DEBUG_PRINT(&debug , &debugText[0]);
 #endif
 	}
 
@@ -727,10 +816,10 @@ EEM_ERR_T 	EEM_PERIODIC( EEM_CAN_Packet_st*  param )
 
 	case MESSAGE06 :
 
-        BCM_MSG.Message06.SPN.VOLTAGE_C1= (EEM_U16)((param->DATA[0])|(param->DATA[1]<<8));
-	    BCM_MSG.Message06.SPN.VOLTAGE_C2= (EEM_U16)((param->DATA[1])|(param->DATA[2]<<8));
-	    BCM_MSG.Message06.SPN.VOLTAGE_C3= (EEM_U16)((param->DATA[3])|(param->DATA[4]<<8));
-	    BCM_MSG.Message06.SPN.VOLTAGE_C4= (EEM_U16)((param->DATA[5])|(param->DATA[6]<<8));
+        BMS_MSG.Message06.SPN.BMS_cell01Voltage_u16= (EEM_U16)((param->DATA[0])|(param->DATA[1]<<8));
+        BMS_MSG.Message06.SPN.BMS_cell02Voltage_u16= (EEM_U16)((param->DATA[1])|(param->DATA[2]<<8));
+        BMS_MSG.Message06.SPN.BMS_cell03Voltage_u16= (EEM_U16)((param->DATA[3])|(param->DATA[4]<<8));
+        BMS_MSG.Message06.SPN.BMS_cell04Voltage_u16= (EEM_U16)((param->DATA[5])|(param->DATA[6]<<8));
 
 
 	break;
@@ -738,10 +827,10 @@ EEM_ERR_T 	EEM_PERIODIC( EEM_CAN_Packet_st*  param )
 
 	case MESSAGE07 :
 
-		 BCM_MSG.Message07.SPN.VOLTAGE_C5= (EEM_U16)((param->DATA[0])|(param->DATA[1]<<8));
-		 BCM_MSG.Message07.SPN.VOLTAGE_C6= (EEM_U16)((param->DATA[1])|(param->DATA[2]<<8));
-		 BCM_MSG.Message07.SPN.VOLTAGE_C7= (EEM_U16)((param->DATA[3])|(param->DATA[4]<<8));
-		 BCM_MSG.Message07.SPN.VOLTAGE_C8= (EEM_U16)((param->DATA[5])|(param->DATA[6]<<8));
+		 BMS_MSG.Message07.SPN.BMS_cell05Voltage_u16= (EEM_U16)((param->DATA[0])|(param->DATA[1]<<8));
+		 BMS_MSG.Message07.SPN.BMS_cell06Voltage_u16= (EEM_U16)((param->DATA[1])|(param->DATA[2]<<8));
+		 BMS_MSG.Message07.SPN.BMS_cell07Voltage_u16= (EEM_U16)((param->DATA[3])|(param->DATA[4]<<8));
+		 BMS_MSG.Message07.SPN.BMS_cell08Voltage_u16= (EEM_U16)((param->DATA[5])|(param->DATA[6]<<8));
 
 
 
@@ -749,29 +838,29 @@ EEM_ERR_T 	EEM_PERIODIC( EEM_CAN_Packet_st*  param )
 
 	case MESSAGE08 :
 
-		 BCM_MSG.Message08.SPN.VOLTAGE_C9= (EEM_U16)((param->DATA[0])|(param->DATA[1]<<8));
-		 BCM_MSG.Message08.SPN.VOLTAGE_C10= (EEM_U16)((param->DATA[1])|(param->DATA[2]<<8));
-		 BCM_MSG.Message08.SPN.VOLTAGE_C11= (EEM_U16)((param->DATA[3])|(param->DATA[4]<<8));
-		 BCM_MSG.Message08.SPN.VOLTAGE_C12= (EEM_U16)((param->DATA[5])|(param->DATA[6]<<8));
+		 BMS_MSG.Message08.SPN.BMS_cell09Voltage_u16= (EEM_U16)((param->DATA[0])|(param->DATA[1]<<8));
+		 BMS_MSG.Message08.SPN.BMS_cell10Voltage_u16= (EEM_U16)((param->DATA[1])|(param->DATA[2]<<8));
+		 BMS_MSG.Message08.SPN.BMS_cell11Voltage_u16= (EEM_U16)((param->DATA[3])|(param->DATA[4]<<8));
+		 BMS_MSG.Message08.SPN.BMS_cell12Voltage_u16= (EEM_U16)((param->DATA[5])|(param->DATA[6]<<8));
 
 	break;
 
 	case MESSAGE09 :
 
-		 BCM_MSG.Message09.SPN.VOLTAGE_C13= (EEM_U16)((param->DATA[0])|(param->DATA[1]<<8));
-		 BCM_MSG.Message09.SPN.VOLTAGE_C14= (EEM_U16)((param->DATA[1])|(param->DATA[2]<<8));
-		 BCM_MSG.Message09.SPN.VOLTAGE_C15= (EEM_U16)((param->DATA[3])|(param->DATA[4]<<8));
-		 BCM_MSG.Message09.SPN.VOLTAGE_C16= (EEM_U16)((param->DATA[5])|(param->DATA[6]<<8));
+		 BMS_MSG.Message09.SPN.BMS_cell13Voltage_u16= (EEM_U16)((param->DATA[0])|(param->DATA[1]<<8));
+		 BMS_MSG.Message09.SPN.BMS_cell14Voltage_u16= (EEM_U16)((param->DATA[1])|(param->DATA[2]<<8));
+		 BMS_MSG.Message09.SPN.BMS_cell15Voltage_u16= (EEM_U16)((param->DATA[3])|(param->DATA[4]<<8));
+		 BMS_MSG.Message09.SPN.BMS_cell16Voltage_u16= (EEM_U16)((param->DATA[5])|(param->DATA[6]<<8));
 
 
 	break;
 
 	case MESSAGE10 :
 
-		BCM_MSG.Message10.SPN.VOLTAGE_C17=(EEM_U16)((param->DATA[0])|(param->DATA[1]<<8));
-		BCM_MSG.Message10.SPN.VOLTAGE_C18=(EEM_U16)((param->DATA[2])|(param->DATA[3]<<8));
-		BCM_MSG.Message10.SPN.TEMP=(EEM_U16)((param->DATA[4])|(param->DATA[5]<<8));
-		BCM_MSG.Message10.SPN.CURRENT=(EEM_U16)((param->DATA[6])|(param->DATA[7]<<8));
+		BMS_MSG.Message10.SPN.BMS_cell17Voltage_u16=(EEM_U16)((param->DATA[0])|(param->DATA[1]<<8));
+		BMS_MSG.Message10.SPN.BMS_cell18Voltage_u16=(EEM_U16)((param->DATA[2])|(param->DATA[3]<<8));
+		BMS_MSG.Message10.SPN.BMS_temperatureVal_u16=(EEM_U16)((param->DATA[4])|(param->DATA[5]<<8));
+		BMS_MSG.Message10.SPN.BMS_lineCurrent_u16  =(EEM_U16)((param->DATA[6])|(param->DATA[7]<<8));
 
 	break;
 
@@ -851,7 +940,6 @@ EEM_ERR_T 	EEM_PERIODIC( EEM_CAN_Packet_st*  param )
 						   ((EEM_U64)param->DATA[6] << 48 ) |
 						   ((EEM_U64)param->DATA[7] << 56 ) );
 
-
 		break;
 
 
@@ -903,9 +991,6 @@ EEM_ERR_T 	EEM_PERIODIC( EEM_CAN_Packet_st*  param )
 				MS2_MSG.Message17.SPN.MS2_PhaseWCurrent  = (EEM_U16)((param->DATA[5])|
 						                                   (EEM_U16)(param->DATA[6]<<8));
 
-
-
-
 	break;
 
 
@@ -921,25 +1006,17 @@ EEM_ERR_T 	EEM_PERIODIC( EEM_CAN_Packet_st*  param )
 								   ((EEM_U64)param->DATA[6] << 48 ) |
 								   ((EEM_U64)param->DATA[7] << 56  );
 
-
-
-
-
 	break;
 
 	case MESSAGE19 :
 
 		BCM_MSG.Message19.SPN.BCM_MS1_Mode=(EEM_U8)(param->DATA[0]);
 
-
 	break;
 
 	case MESSAGE20 :
 
 		BCM_MSG.Message20.SPN.BCM_MS2_Mode=(EEM_U8)(param->DATA[0]);
-
-
-
 
 	break;
 
@@ -1021,8 +1098,39 @@ EEM_BOOL_T	EEM_IS_FULL( const EEM_RING_Buffer_st* buffer )
 }
 
 
+/*******************************************************************************
+	 @func    :
+	 @param   :
+	 @return  :
+	 @date	  :
+	 @INFO		:
+********************************************************************************/
+void EEM_TEST_MSG(void)
+{
+	EEM_PERIODIC(&protocol.obj.canPacket);
 
+	static uint32_t loopVal = 0;
 
+	BCM_MSG.Message03.SPN.BCM_differantialSpeed_u64 = loopVal;
+	loopVal++;
 
+	memcpy(&protocol.obj.canPacket.DATA[0] , &BCM_MSG.Message03.payload[0] , 8);
+	protocol.obj.canPacket.EXTENDED_ID.identifier = BCM_MSG.Message03_ID;
 
+	protocol.ops.EEM_TX( &protocol.obj.canPacket , 0);
 
+}
+
+/*******************************************************************************
+	 @func    :
+	 @param   :
+	 @return  :
+	 @date	  :
+	 @INFO	  :
+********************************************************************************/
+void	EEM_DEBUG_PRINT(EEM_Debug_st* debugParam, char* msg)
+{
+	memset( &debug.message[0] , 0x00 , DEBUG_MESSAGE_SIZE );
+	sprintf( &debug.message[0], msg);
+	HAL_UART_Transmit(&debug.uartHandle, (const EEM_U8*)&debug.message[0], DEBUG_MESSAGE_SIZE, 10);
+}

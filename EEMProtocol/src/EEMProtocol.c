@@ -11,7 +11,7 @@
 #include "EEMProtocol.h"
 #include "EEMProtocol_Config.h"
 
-const	EEM_Protocol_opr_st		ops = 
+const	EEM_Protocol_ops_st		ops =
 {
 	EEM_INIT		,
 	EEM_TX			,
@@ -96,6 +96,114 @@ void HAL_FDCAN_TxBufferCompleteCallback(FDCAN_HandleTypeDef *hfdcan, uint32_t Bu
 #endif
 
 #endif
+
+#if (defined(STM32F446xx) || defined(STM32F407xx) && defined(BXCAN_Protocol))
+/*******************************************************************************
+	 @func    :	EEM_BXCAN_PeriphBase_CTOR
+	 @param   : EEM_bxCAN_PeriphBase_st* param
+	 @param   : CAN_HandleTypeDef _can
+	 @return  : void
+	 @date	  : 22.02.2023
+	 @INFO	  :	Constructur function for BxCAN Periph Class
+********************************************************************************/
+void EEM_BXCAN_PeriphBase_CTOR(EEM_bxCAN_PeriphBase_st* param , CAN_HandleTypeDef* _can)
+{
+	param->hbxcanHandle = *_can;
+
+	memset(&param->sFilterConfig , 0x00 , sizeof(CAN_FilterTypeDef) );
+
+	memset(&param->txHeader , 0x00 , sizeof(CAN_TxHeaderTypeDef) );
+	param->txMailBox = 0 ;
+
+	memset(&param->rxHeader , 0x00 , sizeof(CAN_RxHeaderTypeDef) );
+	param->rxMailBox = 0 ;
+
+	memset(&param->txData[0] , 0x00 , sizeof(param->txData) );
+	memset(&param->rxData[0] , 0x00 , sizeof(param->rxData) );
+}
+#elif (defined(STM32H750xx) && defined(FDCAN_Protocol))
+/*******************************************************************************
+	 @func    :
+	 @param   :
+	 @return  :
+	 @date	  :
+	 @INFO	  :
+********************************************************************************/
+void EEM_FDCAN_PeriphBase_CTOR(EEM_FDCAN_PeriphBase_st* param , FDCAN_HandleTypeDef* _fdcan )
+{
+	param->hfdcanHandle = *_fdcan;
+
+	memset(&param->sFilterConfig , 0x00 , sizeof(FDCAN_FilterTypeDef) );
+
+	memset(&param->txHeader , 0x00 , sizeof(FDCAN_TxHeaderTypeDef) );
+	memset(&param->txHeader , 0x00 , sizeof(FDCAN_RxHeaderTypeDef) );
+
+	memset(&param->txData[0] , 0x00 , sizeof(param->txData) );
+	memset(&param->rxData[0] , 0x00 , sizeof(param->rxData) );
+}
+#else
+#if defined(SPI2CAN_Protocol)
+/*******************************************************************************
+	 @func    :
+	 @param   :
+	 @return  :
+	 @date	  :
+	 @INFO	  :
+********************************************************************************/
+void EEM_SPI2CAN_PeriphBase_CTOR(EEM_SPI2CAN_PeriphBase_st* param )
+{
+	memset( &param->txMessage , 0x00 , sizeof(uCAN_MSG) );
+	memset( &param->rxMessage , 0x00 , sizeof(uCAN_MSG) );
+}
+#else
+	/* Error Constuctor */
+#endif
+#endif
+
+
+/*******************************************************************************
+	 @func    :
+	 @param   :
+	 @return  :
+	 @date	  :
+	 @INFO	  :
+********************************************************************************/
+void EEM_CTOR(EEM_Protocol_st* param, EEM_Protocol_ops_st _ops
+#if (defined(STM32F446xx) || defined(STM32F407xx) && defined(BXCAN_Protocol))
+	, CAN_HandleTypeDef* _can
+#elif (defined(STM32H750xx) && defined(FDCAN_Protocol))
+	, FDCAN_HandleTypeDef* _fdcan
+#else
+/* Only works for spi2can */
+#endif
+)
+{
+	/* Construct methods */
+	param->ops = _ops ;
+
+#if (defined(STM32F446xx) || defined(STM32F407xx) && defined(BXCAN_Protocol))
+
+	EEM_BXCAN_PeriphBase_CTOR(&param->obj.bxHandle , _can);
+
+#elif (defined(STM32H750xx) && defined(FDCAN_Protocol))
+
+	EEM_FDCAN_PeriphBase_CTOR(&param->obj.fdHandle , _fdcan);
+
+#else
+#if defined(SPI2CAN_Protocol)
+
+	EEM_SPI2CAN_PeriphBase_CTOR(&param->obj.spi2canHandle);
+
+#else
+//ERROR
+#endif
+#endif
+
+	/* Construct other objects */
+	memset(&param->obj.canPacket , 0x00 , sizeof(EEM_CAN_Packet_st));
+	memset(&param->obj.ringBuffer , 0x00 , sizeof(EEM_RING_Buffer_st));
+
+}
 
 /*******************************************************************************
 	 @func    :	

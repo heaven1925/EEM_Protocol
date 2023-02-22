@@ -228,7 +228,7 @@ typedef struct
 #if (defined(STM32F446xx) || defined(STM32F407xx) && defined(BXCAN_Protocol))
 	EEM_bxCAN_PeriphBase_st	 	bxHandle;
 #elif (defined(STM32H750xx) && defined(FDCAN_Protocol))
-	EEM_FDCAN_PeriphBase_st  	dHandle;
+	EEM_FDCAN_PeriphBase_st  	fdHandle;
 #else
 #if defined(SPI2CAN_Protocol)
 	EEM_SPI2CAN_PeriphBase_st	spi2canHandle;
@@ -267,13 +267,13 @@ typedef struct
 /*
 	Protocol machine change data defined format of variables
 	*/
-}EEM_Protocol_opr_st;
+}EEM_Protocol_ops_st;
 
 
 typedef struct{
 	
 	EEM_Protocol_obj_st		obj;
-	EEM_Protocol_opr_st		ops;
+	EEM_Protocol_ops_st		ops;
 
 }EEM_Protocol_st;
 
@@ -301,6 +301,17 @@ typedef struct{
 /*----------------------------------------------------------------------------*/
 /* Functions used outside this module                                         */
 /*----------------------------------------------------------------------------*/
+void 			EEM_CTOR	( EEM_Protocol_st* 		param,
+							  EEM_Protocol_ops_st 	_ops
+#if (defined(STM32F446xx) || defined(STM32F407xx) && defined(BXCAN_Protocol))
+							, CAN_HandleTypeDef* _can
+#elif (defined(STM32H750xx) && defined(FDCAN_Protocol))
+							, FDCAN_HandleTypeDef* _fdcan
+#else
+/* Only works for spi2can */
+#endif
+);
+
 EEM_ERR_T 		EEM_INIT	( EEM_Protocol_obj_st*  param );
 
 EEM_ERR_T 		EEM_TX		( EEM_CAN_Packet_st* param, EEM_U32 period );
@@ -317,12 +328,20 @@ EEM_ERR_T 		EEM_RX		( EEM_CAN_Packet_st* 	param 	  ,
 #endif
 							 EEM_U8*				rxData	  );
 
-
 EEM_ERR_T 		EEM_PERIODIC( EEM_CAN_Packet_st*  param );
 
 /*----------------------------------------------------------------------------*/
 /* Functions used only by this module                                         */
 /*----------------------------------------------------------------------------*/
+
+#if (defined(STM32F446xx) || defined(STM32F407xx) && defined(BXCAN_Protocol))
+void EEM_BXCAN_PeriphBase_CTOR(EEM_bxCAN_PeriphBase_st* param , CAN_HandleTypeDef* _can);
+#elif (defined(STM32H750xx) && defined(FDCAN_Protocol))
+void EEM_FDCAN_PeriphBase_CTOR(EEM_FDCAN_PeriphBase_st* param , FDCAN_HandleTypeDef* _fdcan );
+#else
+void EEM_SPI2CAN_PeriphBase_CTOR(EEM_SPI2CAN_PeriphBase_st* param );
+#endif
+
 void   			EEM_PUSH	( EEM_RING_Buffer_st* ringBuf , EEM_CAN_Packet_st* param);
 
 void			EEM_POP 	( EEM_RING_Buffer_st* ringBuf , EEM_CAN_Packet_st* param);
@@ -344,7 +363,7 @@ void			EEM_DEBUG_PRINT(EEM_Debug_st* debugParam, char* msg);
 /* Variables used outside this module                                         */
 /*----------------------------------------------------------------------------*/
 extern 			EEM_Protocol_st			protocol;
-extern const	EEM_Protocol_opr_st		ops;
+extern const	EEM_Protocol_ops_st		ops;
 /*----------------------------------------------------------------------------*/
 /* Externs for variables                                                      */
 /*----------------------------------------------------------------------------*/
